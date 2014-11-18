@@ -15,6 +15,19 @@ $RECYCLE.BIN/
 *.msp
 
 # =========================
+# Unity specific
+# =========================
+
+# Ignore all of Unity's unneeded meta files
+Library/
+Temp/
+*.csproj
+*.unityproj
+*.sln
+*.userprefs
+*.user
+
+# =========================
 # Operating System Files
 # =========================
 
@@ -26,7 +39,8 @@ $RECYCLE.BIN/
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
