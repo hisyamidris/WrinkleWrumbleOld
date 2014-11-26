@@ -11,10 +11,19 @@ using System.Collections;
 public class BasicAniController : MonoBehaviour {
 	
 	Animator animation_vals;
-	public float runSpeed = 3f;
-	public float rotationSpeed = 50f;
+	public float runSpeed = 4.5f;
+	public float rotationSpeed = 100f;
+	public float jumpForce = 300f;
+	public Transform groundCheck; // Check if we are touching the floor
+	public LayerMask whatIsGround;
 	
-//	private Vector3 Vec3WalkSpeed = new Vector3(0f, 0f, 0.1f);
+	private bool grounded = true;
+	private float groundRadius = 0.2f;
+
+	// Jump delay vars
+	private float jumpTimeDelay = 1.3f;
+	private float eTime = 0f;
+	private bool delayJump = false;
 	
 	// Collect Animator component
 	void Start () 
@@ -24,24 +33,43 @@ public class BasicAniController : MonoBehaviour {
 	
 	//
 	// Basic Movement handler
-	//		Notes: 	- Need Speed param in controller
-	//				-
+	//		Notes: 	- Backwards animation (moving back) is still improper...
+	//				- Setup whatIsGround layer mask
 	//
 	void FixedUpdate()
 	{	
-
+		
+		// Get key presses and store in locals
 		float leMovement = Input.GetAxis("Vertical");
 		float leTurning = Input.GetAxis ("Horizontal");
 		float leRotation = leTurning * rotationSpeed;
-
-		Vector3 relativeMovement = transform.TransformDirection (Vector3.forward*runSpeed* Mathf.Abs (leMovement));
-		//Debug.Log ("Relative movement: " + relativeMovement);
 		
-		animation_vals.SetFloat("Speed", Mathf.Abs (leMovement));
-		animation_vals.SetFloat ("Rotation", leTurning);
-		//animation_vals.SetFloat("Speed", leMovement);
+		// Check if we are grounded
+		grounded = Physics.CheckSphere(groundCheck.position, groundRadius, whatIsGround);
+		animation_vals.SetBool ("Ground", grounded);
 
-		// Movement
+		// Get relative movement
+		Vector3 relativeMovement = transform.TransformDirection (Vector3.forward*runSpeed* Mathf.Abs (leMovement));
+		Debug.Log ("Relative movement: " + relativeMovement);
+		
+		// Do run animation?
+		if(grounded)
+			animation_vals.SetFloat("Speed", Mathf.Abs (leMovement));
+
+		// Delay Jump?
+		if(delayJump)
+		{
+			if(eTime >= jumpTimeDelay)
+			{
+				delayJump = false;
+				eTime = 0f;
+			}
+			else
+				eTime = eTime + Time.fixedDeltaTime;
+		}
+		//Debug.Log ("Delay Jump? " + delayJump);
+
+		// XZ movement
 		if(leMovement > 0)
 		{
 			rigidbody.MovePosition (rigidbody.transform.position + relativeMovement * Time.fixedDeltaTime);
@@ -50,14 +78,32 @@ public class BasicAniController : MonoBehaviour {
 		{
 			rigidbody.MovePosition (rigidbody.transform.position - relativeMovement * Time.fixedDeltaTime);
 		}
-		// Turning
-		transform.Rotate(Vector3.up, leRotation * Time.fixedDeltaTime);
+
+		// Y Rotation
+		animation_vals.SetFloat ("Rotation", leTurning);
+		if((leTurning > 0.1) || (leTurning < -0.1))
+		{
+			transform.Rotate(Vector3.up, leRotation * Time.fixedDeltaTime);	
+		}
 		
 	}
-
+	
+	//
+	//	Jump logic
+	//
 	void Update()
 	{
-		
+		//Debug.Log ("Grounded = " + grounded);
+		if(!delayJump)
+		{
+			if(grounded && Input.GetButtonDown("Jump"))
+			{
+				//animation_vals.SetBool ("Ground", false);
+				grounded = false;
+				rigidbody.AddForce(new Vector3(0f, jumpForce, 0f));
+				delayJump = true;
+			}
+		}
 	}
 	
 	//
