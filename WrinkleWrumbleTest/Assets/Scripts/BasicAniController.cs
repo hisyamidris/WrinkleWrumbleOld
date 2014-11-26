@@ -11,10 +11,10 @@ using System.Collections;
 public class BasicAniController : MonoBehaviour {
 	
 	Animator animation_vals;
-	public float walkSpeed = 3f;
+	public float runSpeed = 3f;
 	public float rotationSpeed = 50f;
 	
-	private Vector3 Vec3WalkSpeed = new Vector3(0f, 0f, 0.1f);
+//	private Vector3 Vec3WalkSpeed = new Vector3(0f, 0f, 0.1f);
 	
 	// Collect Animator component
 	void Start () 
@@ -31,12 +31,14 @@ public class BasicAniController : MonoBehaviour {
 	{	
 
 		float leMovement = Input.GetAxis("Vertical");
-		float leTurning = Input.GetAxis ("Horizontal") * rotationSpeed;
+		float leTurning = Input.GetAxis ("Horizontal");
+		float leRotation = leTurning * rotationSpeed;
 
-		Vector3 relativeMovement = transform.TransformDirection (Vector3.forward*walkSpeed* Mathf.Abs (leMovement));
+		Vector3 relativeMovement = transform.TransformDirection (Vector3.forward*runSpeed* Mathf.Abs (leMovement));
 		//Debug.Log ("Relative movement: " + relativeMovement);
 		
 		animation_vals.SetFloat("Speed", Mathf.Abs (leMovement));
+		animation_vals.SetFloat ("Rotation", leTurning);
 		//animation_vals.SetFloat("Speed", leMovement);
 
 		// Movement
@@ -49,7 +51,7 @@ public class BasicAniController : MonoBehaviour {
 			rigidbody.MovePosition (rigidbody.transform.position - relativeMovement * Time.fixedDeltaTime);
 		}
 		// Turning
-		transform.Rotate(Vector3.up, leTurning * Time.fixedDeltaTime);
+		transform.Rotate(Vector3.up, leRotation * Time.fixedDeltaTime);
 		
 	}
 
