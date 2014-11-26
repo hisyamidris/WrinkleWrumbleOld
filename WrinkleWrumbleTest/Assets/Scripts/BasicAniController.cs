@@ -13,18 +13,19 @@ public class BasicAniController : MonoBehaviour {
 	Animator animation_vals;
 	public float runSpeed = 4.5f;
 	public float rotationSpeed = 100f;
+
+	// Jump parameters
 	public float jumpForce = 300f;
 	public Transform groundCheck; // Check if we are touching the floor
 	public LayerMask whatIsGround;
-	
 	private bool grounded = true;
 	private float groundRadius = 0.2f;
 
 	// Jump delay vars
-	private float jumpTimeDelay = 1.3f;
+	public float jumpTimeDelay = 1.3f;
 	private float eTime = 0f;
 	private bool delayJump = false;
-	
+
 	// Collect Animator component
 	void Start () 
 	{
@@ -34,7 +35,6 @@ public class BasicAniController : MonoBehaviour {
 	//
 	// Basic Movement handler
 	//		Notes: 	- Backwards animation (moving back) is still improper...
-	//				- Setup whatIsGround layer mask
 	//
 	void FixedUpdate()
 	{	
@@ -51,6 +51,8 @@ public class BasicAniController : MonoBehaviour {
 		// Get relative movement
 		Vector3 relativeMovement = transform.TransformDirection (Vector3.forward*runSpeed* Mathf.Abs (leMovement));
 		Debug.Log ("Relative movement: " + relativeMovement);
+
+		animation_vals.SetFloat ("vSpeed", rigidbody.velocity.y);
 		
 		// Do run animation?
 		if(grounded)
