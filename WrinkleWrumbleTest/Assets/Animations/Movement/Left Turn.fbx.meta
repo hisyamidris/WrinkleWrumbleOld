@@ -135,7 +135,7 @@ ModelImporter:
     400126: mixamorig:Spine1
     400128: mixamorig:Spine2
     400130: //RootNode
-    7400000: left_turn
+    7400000: Left Turn
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -154,7 +154,7 @@ ModelImporter:
     extraExposedTransformPaths: []
     clipAnimations:
     - serializedVersion: 16
-      name: left_turn
+      name: Left Turn
       takeName: mixamo.com
       firstFrame: 0
       lastFrame: 35
