@@ -196,7 +196,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Throwing Motion
       takeName: mixamo.com
-      firstFrame: 34
+      firstFrame: 50
       lastFrame: 80
       wrapMode: 0
       orientationOffsetY: 0
