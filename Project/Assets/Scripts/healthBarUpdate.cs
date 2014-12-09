@@ -22,7 +22,7 @@ public class healthBarUpdate : MonoBehaviour {
 	//Check if player enters/stays on the fire
 	void OnTriggerStay(Collider other){
 		//if player triggers fire object and health is greater than 0
-		if(other.gameObject.name=="Chair02" && healthBarSlider.value>0){
+		if(other.gameObject.tag == "Pushable" && healthBarSlider.value > 0 && other.rigidbody.velocity != Vector3.zero){
 			healthBarSlider.value -=.011f;  //reduce health
 		}
 		else{
