@@ -42,6 +42,7 @@ public class BasicAniController : MonoBehaviour {
 	{
 		animation_vals = GetComponent<Animator>();
 		audio.clip = RunningSFX;
+		audio.volume = 0.75f;
 
 		// Declare array size. Apparently Unity does this for you.
 		//Pain = new AudioClip[3];
@@ -149,6 +150,7 @@ public class BasicAniController : MonoBehaviour {
 
 	//
 	//	Logic for making footsteps SFX
+	//
 	void CheckFootSteps()
 	{
 		if(grounded)
@@ -167,6 +169,18 @@ public class BasicAniController : MonoBehaviour {
 		else
 		{
 			audio.Pause ();
+		}
+	}
+
+	//
+	//	Trigger detection with pickupable objects
+	//
+	void OnTriggerEnter(Collider theTrigger)
+	{
+		if(theTrigger.gameObject.name == "Throwable_Powerup")
+		{
+			Destroy (theTrigger.gameObject);
+			collider.isTrigger = true;
 		}
 	}
 }
