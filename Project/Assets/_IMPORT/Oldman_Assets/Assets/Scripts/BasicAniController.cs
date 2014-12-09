@@ -14,6 +14,9 @@ public class BasicAniController : MonoBehaviour {
 	
 	Animator animation_vals;
 
+	// Death parameters
+	private bool isDead = false;
+
 	// Running and rotation parameters
 	public float runSpeed = 4.5f;
 	public float rotationSpeed = 100f;
@@ -38,13 +41,17 @@ public class BasicAniController : MonoBehaviour {
 	private int PainNumber = 0;
 
 	// Throw Parameters
+	public GameObject ThrowableCube;
+	public Transform ThrowPosition;
 	public float ThrowTime = 1f;
 	private bool isThrowing = false;
+	private bool hasCube = false;
 	private float eTime = 0f;
 
-	//Referencing other scripts
-	bool isHoldingItem = false;
 
+	//GameObject
+	public static GameObject grabbedObject = null;
+	private string objectName = "";
 	// Collect Animator component
 	void Start () 
 	{
@@ -52,18 +59,26 @@ public class BasicAniController : MonoBehaviour {
 		audio.clip = RunningSFX;
 		audio.volume = 0.75f;
 
+		isDead = false;
+		grabbedObject = new GameObject ();
+
 		// Declare array size. Apparently Unity does this for you.
 		//Pain = new AudioClip[3];
-
-		//Referencing other scripts
-		//isHoldingItem = GetComponent<ItemPickup> ();
 	}
 	
 	//
 	// Basic Movement handler and throw logic
+	// DEBUG: Death tester	
 	//
 	void FixedUpdate()
 	{	
+		// Run footstep SFX
+		CheckFootSteps();
+
+		// Stop everything if dead.
+		if(isDead)
+			return;
+
 		if(isThrowing)
 		{
 			eTime = eTime + Time.fixedDeltaTime;
@@ -72,13 +87,9 @@ public class BasicAniController : MonoBehaviour {
 				isThrowing = false;
 				animation_vals.SetBool ("Throw", isThrowing);
 				eTime = 0f;
-				ItemPickup.isHoldingItem = false;
-				ItemPickup.CubeRender.enabled = false;
 			}
 			else
-			{
 				return;
-			}
 		}
 		// Get key presses and store in locals
 		float leMovement = Input.GetAxis("Vertical");
@@ -109,10 +120,11 @@ public class BasicAniController : MonoBehaviour {
 			animation_vals.SetFloat ("Speed", leMovement);
 			animation_vals.SetFloat ("Strafe", leStrafe);
 
-			// Stop jumping (so char does not climb up walls)
+
 			jump_eTime = 0f;
 			delayJump = false;
 		}
+		// Stop jumping after a certain amount of time. (so char does not climb up walls)
 		else
 		{
 			jump_eTime = jump_eTime + Time.fixedDeltaTime;
@@ -120,11 +132,8 @@ public class BasicAniController : MonoBehaviour {
 				delayJump = true;
 		}
 
-		// Delay Jump?
-
-
 		// XZ movement
-		if(((leMovement > 0) || (leStrafe != 0)) && (!delayJump) && !(isThrowing))
+		if(((leMovement > 0) || (leStrafe != 0)) && (!delayJump))
 		{
 			rigidbody.MovePosition (rigidbody.transform.position + relativeMovement * Time.fixedDeltaTime);
 			//CheckFootSteps();
@@ -139,13 +148,27 @@ public class BasicAniController : MonoBehaviour {
 		}
 			
 		// Throw logic
-		if((Input.GetKeyDown (KeyCode.K)) && (grounded) && ItemPickup.isHoldingItem)
+		if((Input.GetKeyDown (KeyCode.K)) && (grounded) && (hasCube))
 		{
 			isThrowing = true;
+			hasCube = false;
 			animation_vals.SetBool ("Throw", isThrowing);
+			//Instantiate(ThrowableCube, ThrowPosition.position, ThrowPosition.rotation);
+			//GameObject newObject = Instantiate(grabbedObject, ThrowPosition.position, ThrowPosition.rotation) as GameObject;
+			GameObject newObject = Instantiate(Resources.Load(objectName, typeof(GameObject)), ThrowPosition.position, ThrowPosition.rotation) as GameObject;
+			newObject.transform.localScale = new Vector3(1f, 1f, 1f);
+			newObject.rigidbody.AddRelativeForce (Vector3.forward * 700f);
+			newObject.name = newObject.name.Replace("(Clone)", "");
 		}
-		CheckFootSteps();
-		
+
+		// DEBUG: death logic
+		if(Input.GetKeyDown (KeyCode.O))
+		{
+			isDead = true;
+			animation_vals.SetBool ("Ground", true);
+			animation_vals.SetBool ("Dead", isDead);
+		}
+
 	}
 	
 	//
@@ -154,6 +177,10 @@ public class BasicAniController : MonoBehaviour {
 	//
 	void Update()
 	{
+		// Stop everything if dead.
+		if(isDead)
+			return;
+
 		// Jump logic
 		if(!delayJump)
 		{
@@ -169,9 +196,7 @@ public class BasicAniController : MonoBehaviour {
 
 		// DEBUG
 		if(Input.GetKeyDown (KeyCode.P))
-		{
 			OnHitByObject();
-		}
 	}
 
 	//
@@ -188,23 +213,19 @@ public class BasicAniController : MonoBehaviour {
 	//
 	void CheckFootSteps()
 	{
-		if((grounded)&&(!isThrowing))
+		if((grounded)&&(!isThrowing)&&(!isDead))
 		{
-			if(Input.GetButton ("Vertical") || 
+			if((Input.GetButton ("Vertical2")) || 
 			   Input.GetButton ("Strafe"))
 			{
 				if(!audio.isPlaying)
 					audio.Play ();
 			}
 			else
-			{
 				audio.Pause();
-			}
 		}
 		else
-		{
 			audio.Pause ();
-		}
 	}
 
 	//
@@ -212,10 +233,23 @@ public class BasicAniController : MonoBehaviour {
 	//
 	void OnTriggerEnter(Collider theTrigger)
 	{
-		if(theTrigger.gameObject.name == "Throwable_Powerup")
+		if(theTrigger.gameObject.tag == "Throwable" && 
+		   theTrigger.rigidbody.velocity.y < 1f && 
+		   !(hasCube)
+		   //&& Input.GetKey(KeyCode.J)
+		   )
 		{
+			hasCube = true;
+			//Debug.Log (theTrigger.GetComponent<MeshRenderer>().name);
+			//ItemPickup.CubeRender = theTrigger.GetComponent<MeshRenderer> ();
+			//ItemPickup.CubeFilter = theTrigger.GetComponent<MeshFilter> ();
+			//grabbedObject = theTrigger.GetComponents<GameObject>() as GameObject;
+			objectName = theTrigger.gameObject.name;
+			grabbedObject = GameObject.Find(objectName);
+			//collider.isTrigger = true;
+			//theTrigger.renderer.enabled = false;
+			//theTrigger.collider.enabled = false;
 			Destroy (theTrigger.gameObject);
-			collider.isTrigger = true;
 		}
 	}
 }

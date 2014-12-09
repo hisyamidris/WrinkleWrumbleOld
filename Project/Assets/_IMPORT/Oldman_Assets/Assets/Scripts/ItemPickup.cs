@@ -6,14 +6,15 @@ using UnityEngine;
 using System.Collections;
 
 public class ItemPickup : MonoBehaviour {
-
-	public static bool isHoldingItem = false;
+	
 	public AudioClip PickSFX;
-	public static MeshRenderer CubeRender;
+	static public MeshRenderer CubeRender;
+	static public MeshFilter CubeFilter;
 
 	void Start()
 	{
 		CubeRender = gameObject.GetComponent<MeshRenderer> ();
+		CubeFilter = gameObject.GetComponent<MeshFilter> ();
 		CubeRender.enabled = false;
 	}
 	
@@ -25,16 +26,18 @@ public class ItemPickup : MonoBehaviour {
 	{
 		if(Input.GetKeyDown(KeyCode.K))
 		{
-			//CubeRender.enabled = false;
-			//isHoldingItem = false;
+			CubeRender.enabled = false;
 		}
 
 		if(transform.root.collider.isTrigger)
 		{
+			Debug.Log ("ASDF");
 			audio.PlayOneShot (PickSFX);
 			CubeRender.enabled = true;
-			isHoldingItem = true;
 			transform.root.collider.isTrigger = false; // Reset the trigger.
 		}
+
+//		CubeRender = BasicAniController.grabbedObject.gameObject.GetComponent<MeshRenderer> ();
+//		CubeFilter = BasicAniController.grabbedObject.gameObject.GetComponent<MeshFilter> ();
 	}
 }
