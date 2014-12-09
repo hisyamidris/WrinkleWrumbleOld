@@ -38,8 +38,11 @@ public class BasicAniController : MonoBehaviour {
 	private int PainNumber = 0;
 
 	// Throw Parameters
+	public GameObject ThrowableCube;
+	public Transform ThrowPosition;
 	public float ThrowTime = 1f;
 	private bool isThrowing = false;
+	private bool hasCube = false;
 	private float eTime = 0f;
 
 	// Collect Animator component
@@ -68,9 +71,7 @@ public class BasicAniController : MonoBehaviour {
 				eTime = 0f;
 			}
 			else
-			{
 				return;
-			}
 		}
 		// Get key presses and store in locals
 		float leMovement = Input.GetAxis("Vertical");
@@ -101,19 +102,17 @@ public class BasicAniController : MonoBehaviour {
 			animation_vals.SetFloat ("Speed", leMovement);
 			animation_vals.SetFloat ("Strafe", leStrafe);
 
-			// Stop jumping (so char does not climb up walls)
+
 			jump_eTime = 0f;
 			delayJump = false;
 		}
+		// Stop jumping after a certain amount of time. (so char does not climb up walls)
 		else
 		{
 			jump_eTime = jump_eTime + Time.fixedDeltaTime;
 			if(jump_eTime >= jumpTimeStop)
 				delayJump = true;
 		}
-
-		// Delay Jump?
-
 
 		// XZ movement
 		if(((leMovement > 0) || (leStrafe != 0)) && (!delayJump))
@@ -131,13 +130,16 @@ public class BasicAniController : MonoBehaviour {
 		}
 			
 		// Throw logic
-		if((Input.GetKeyDown (KeyCode.K)) && (grounded))
+		if((Input.GetKeyDown (KeyCode.K)) && (grounded) && (hasCube))
 		{
 			isThrowing = true;
+			hasCube = false;
 			animation_vals.SetBool ("Throw", isThrowing);
+			Instantiate(ThrowableCube, ThrowPosition.position, ThrowPosition.rotation);
 		}
+
+		// Run footstep SFX
 		CheckFootSteps();
-		
 	}
 	
 	//
@@ -160,10 +162,8 @@ public class BasicAniController : MonoBehaviour {
 		}
 
 		// DEBUG
-		if(Input.GetKeyDown (KeyCode.P))
-		{
-			OnHitByObject();
-		}
+		//if(Input.GetKeyDown (KeyCode.P))
+		//	OnHitByObject();
 	}
 
 	//
@@ -189,16 +189,12 @@ public class BasicAniController : MonoBehaviour {
 					audio.Play ();
 			}
 			else
-			{
 				audio.Pause();
-			}
 		}
 		else
-		{
 			audio.Pause ();
-		}
 	}
-
+	
 	//
 	//	Trigger detection with pickupable objects
 	//
@@ -207,6 +203,7 @@ public class BasicAniController : MonoBehaviour {
 		if(theTrigger.gameObject.name == "Throwable_Powerup")
 		{
 			Destroy (theTrigger.gameObject);
+			hasCube = true;
 			collider.isTrigger = true;
 		}
 	}
