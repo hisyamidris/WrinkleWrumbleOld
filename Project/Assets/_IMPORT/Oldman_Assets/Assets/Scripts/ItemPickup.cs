@@ -1,0 +1,40 @@
+﻿// ItemPickup.cs
+//		Dependent on BasicAniController.cs. It will not work alone.
+//
+
+using UnityEngine;
+using System.Collections;
+
+public class ItemPickup : MonoBehaviour {
+
+	public static bool isHoldingItem = false;
+	public AudioClip PickSFX;
+	public static MeshRenderer CubeRender;
+
+	void Start()
+	{
+		CubeRender = gameObject.GetComponent<MeshRenderer> ();
+		CubeRender.enabled = false;
+	}
+	
+	//
+	//	Item pickup logic. Works with BasicAniController.cs
+	//
+	// DEBUG: using K for throwing object.
+	void Update()
+	{
+		if(Input.GetKeyDown(KeyCode.K))
+		{
+			//CubeRender.enabled = false;
+			//isHoldingItem = false;
+		}
+
+		if(transform.root.collider.isTrigger)
+		{
+			audio.PlayOneShot (PickSFX);
+			CubeRender.enabled = true;
+			isHoldingItem = true;
+			transform.root.collider.isTrigger = false; // Reset the trigger.
+		}
+	}
+}
