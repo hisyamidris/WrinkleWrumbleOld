@@ -27,8 +27,8 @@ public class BasicAniController : MonoBehaviour {
 	private float groundRadius = 0.2f;
 
 	// Jump delay vars
-	public float jumpTimeDelay = 1.3f;
-	private float eTime = 0f;
+	public float jumpTimeStop = 1.3f;
+	private float jump_eTime = 0f;
 	private bool delayJump = false;
 
 	// SFX parameters
@@ -36,6 +36,11 @@ public class BasicAniController : MonoBehaviour {
 	public AudioClip JumpSFX; 
 	public AudioClip[] PainSFX;
 	private int PainNumber = 0;
+
+	// Throw Parameters
+	public float ThrowTime = 1f;
+	private bool isThrowing = false;
+	private float eTime = 0f;
 
 	// Collect Animator component
 	void Start () 
@@ -49,12 +54,24 @@ public class BasicAniController : MonoBehaviour {
 	}
 	
 	//
-	// Basic Movement handler
-	//		Notes: 	- Backwards animation (moving back) is still improper...
-	//				-
-	//				- 
+	// Basic Movement handler and throw logic
+	//
 	void FixedUpdate()
 	{	
+		if(isThrowing)
+		{
+			eTime = eTime + Time.fixedDeltaTime;
+			if(eTime >= ThrowTime)
+			{
+				isThrowing = false;
+				animation_vals.SetBool ("Throw", isThrowing);
+				eTime = 0f;
+			}
+			else
+			{
+				return;
+			}
+		}
 		// Get key presses and store in locals
 		float leMovement = Input.GetAxis("Vertical");
 		float leTurning = Input.GetAxis ("Horizontal");
@@ -83,26 +100,26 @@ public class BasicAniController : MonoBehaviour {
 		{
 			animation_vals.SetFloat ("Speed", leMovement);
 			animation_vals.SetFloat ("Strafe", leStrafe);
+
+			// Stop jumping (so char does not climb up walls)
+			jump_eTime = 0f;
+			delayJump = false;
+		}
+		else
+		{
+			jump_eTime = jump_eTime + Time.fixedDeltaTime;
+			if(jump_eTime >= jumpTimeStop)
+				delayJump = true;
 		}
 
 		// Delay Jump?
-		if(delayJump)
-		{
-			if(eTime >= jumpTimeDelay)
-			{
-				delayJump = false;
-				eTime = 0f;
-			}
-			else
-				eTime = eTime + Time.fixedDeltaTime;
-		}
-		//Debug.Log ("Delay Jump? " + delayJump);
+
 
 		// XZ movement
-		if((leMovement > 0) || (leStrafe != 0))
+		if(((leMovement > 0) || (leStrafe != 0)) && (!delayJump))
 		{
 			rigidbody.MovePosition (rigidbody.transform.position + relativeMovement * Time.fixedDeltaTime);
-			CheckFootSteps();
+			//CheckFootSteps();
 		}
 
 		// Y Rotation
@@ -112,15 +129,24 @@ public class BasicAniController : MonoBehaviour {
 		{
 			transform.Rotate(Vector3.up, leRotation * Time.fixedDeltaTime);	
 		}
+			
+		// Throw logic
+		if((Input.GetKeyDown (KeyCode.K)) && (grounded))
+		{
+			isThrowing = true;
+			animation_vals.SetBool ("Throw", isThrowing);
+		}
+		CheckFootSteps();
 		
 	}
 	
 	//
-	//	Jump logic
+	//	Jump
 	//	DEBUG: Press P button for pain SFX. Please remove later
 	//
 	void Update()
 	{
+		// Jump logic
 		if(!delayJump)
 		{
 			if(grounded && Input.GetButtonDown("Jump"))
@@ -133,6 +159,7 @@ public class BasicAniController : MonoBehaviour {
 			}
 		}
 
+		// DEBUG
 		if(Input.GetKeyDown (KeyCode.P))
 		{
 			OnHitByObject();
@@ -153,7 +180,7 @@ public class BasicAniController : MonoBehaviour {
 	//
 	void CheckFootSteps()
 	{
-		if(grounded)
+		if((grounded)&&(!isThrowing))
 		{
 			if(Input.GetButton ("Vertical") || 
 			   Input.GetButton ("Strafe"))
