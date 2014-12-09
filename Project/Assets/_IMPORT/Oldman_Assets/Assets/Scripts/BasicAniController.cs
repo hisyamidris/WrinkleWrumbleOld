@@ -52,6 +52,8 @@ public class BasicAniController : MonoBehaviour {
 	//GameObject
 	public static GameObject grabbedObject = null;
 	private string objectName = "";
+	public AudioClip ThrowingSFX;
+
 	// Collect Animator component
 	void Start () 
 	{
@@ -159,6 +161,7 @@ public class BasicAniController : MonoBehaviour {
 			newObject.transform.localScale = new Vector3(1f, 1f, 1f);
 			newObject.rigidbody.AddRelativeForce (Vector3.forward * 700f);
 			newObject.name = newObject.name.Replace("(Clone)", "");
+			audio.PlayOneShot (ThrowingSFX);
 		}
 
 		// DEBUG: death logic
