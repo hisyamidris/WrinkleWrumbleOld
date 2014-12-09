@@ -14,6 +14,9 @@ public class BasicAniController : MonoBehaviour {
 	
 	Animator animation_vals;
 
+	// Death parameters
+	private bool isDead = false;
+
 	// Running and rotation parameters
 	public float runSpeed = 4.5f;
 	public float rotationSpeed = 100f;
@@ -52,15 +55,25 @@ public class BasicAniController : MonoBehaviour {
 		audio.clip = RunningSFX;
 		audio.volume = 0.75f;
 
+		isDead = false;
+
 		// Declare array size. Apparently Unity does this for you.
 		//Pain = new AudioClip[3];
 	}
 	
 	//
 	// Basic Movement handler and throw logic
+	// DEBUG: Death tester	
 	//
 	void FixedUpdate()
 	{	
+		// Run footstep SFX
+		CheckFootSteps();
+
+		// Stop everything if dead.
+		if(isDead)
+			return;
+
 		if(isThrowing)
 		{
 			eTime = eTime + Time.fixedDeltaTime;
@@ -138,8 +151,14 @@ public class BasicAniController : MonoBehaviour {
 			Instantiate(ThrowableCube, ThrowPosition.position, ThrowPosition.rotation);
 		}
 
-		// Run footstep SFX
-		CheckFootSteps();
+		// DEBUG: death logic
+		if(Input.GetKeyDown (KeyCode.O))
+		{
+			isDead = true;
+			animation_vals.SetBool ("Ground", true);
+			animation_vals.SetBool ("Dead", isDead);
+		}
+
 	}
 	
 	//
@@ -148,6 +167,10 @@ public class BasicAniController : MonoBehaviour {
 	//
 	void Update()
 	{
+		// Stop everything if dead.
+		if(isDead)
+			return;
+
 		// Jump logic
 		if(!delayJump)
 		{
@@ -162,8 +185,8 @@ public class BasicAniController : MonoBehaviour {
 		}
 
 		// DEBUG
-		//if(Input.GetKeyDown (KeyCode.P))
-		//	OnHitByObject();
+		if(Input.GetKeyDown (KeyCode.P))
+			OnHitByObject();
 	}
 
 	//
@@ -180,9 +203,9 @@ public class BasicAniController : MonoBehaviour {
 	//
 	void CheckFootSteps()
 	{
-		if((grounded)&&(!isThrowing))
+		if((grounded)&&(!isThrowing)&&(!isDead))
 		{
-			if(Input.GetButton ("Vertical") || 
+			if((Input.GetButton ("Vertical2")) || 
 			   Input.GetButton ("Strafe"))
 			{
 				if(!audio.isPlaying)
