@@ -54,7 +54,7 @@ public class BasicAniController : Photon.MonoBehaviour {
 
 	//GameObject
 	public static GameObject grabbedObject = null;
-	private int objectViewID;
+	//private int objectViewID;
 	private string objectName = "";
 	public AudioClip ThrowingSFX;
 
@@ -182,7 +182,7 @@ public class BasicAniController : Photon.MonoBehaviour {
 		}
 
 		// DEBUG: death logic
-		if(Input.GetKeyDown (KeyCode.O))
+		if(Input.GetKeyDown (KeyCode.O) || (healthBarUpdate.isGameOver))
 		{
 			isDead = true;
 			animation_vals.SetBool ("Ground", true);
@@ -266,15 +266,15 @@ public class BasicAniController : Photon.MonoBehaviour {
 			//ItemPickup.CubeFilter = theTrigger.GetComponent<MeshFilter> ();
 			//grabbedObject = theTrigger.GetComponents<GameObject>() as GameObject;
 			//Debug.Log("subId: " + theTrigger.GetComponent<PhotonView>().subId);
-			objectViewID = theTrigger.GetComponent<PhotonView>().subId;
+			//objectViewID = theTrigger.GetComponent<PhotonView>().subId;
 			Debug.Log(theTrigger.gameObject.name);
 			objectName = theTrigger.gameObject.name;
 			grabbedObject = GameObject.Find(objectName);
 			//collider.isTrigger = true;
 			//theTrigger.renderer.enabled = false;
 			//theTrigger.collider.enabled = false;
-			if(PhotonNetwork.isMasterClient)
-			PhotonNetwork.Destroy (theTrigger.gameObject);
+			if (PhotonNetwork.isMasterClient)
+				PhotonNetwork.Destroy (theTrigger.gameObject);
 		}
 	}
 }

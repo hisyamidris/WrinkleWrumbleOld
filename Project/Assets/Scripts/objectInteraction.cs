@@ -17,7 +17,7 @@ public class objectInteraction : MonoBehaviour {
 	}
 
 	void OnTriggerStay(Collider other) {
-		if (push && other.gameObject.tag == "Pushable") {
+		if (push && (other.gameObject.tag == "Pushable" || other.gameObject.tag == "Player")) {
 				if (other.rigidbody != null)
 				{
 					Debug.Log ("Pushing Object: " + other.gameObject.name);
@@ -30,13 +30,13 @@ public class objectInteraction : MonoBehaviour {
 		}
 	}
 
-	bool canSwitch = false;
+//	bool canSwitch = false;
 	bool waitActive = false; //so wait function wouldn't be called many times per frame
 	
 	IEnumerator Wait(){
 		waitActive = true;
 		yield return new WaitForSeconds (0.867f);
-		canSwitch = true;
+//		canSwitch = true;
 		waitActive = false;
 	}
 

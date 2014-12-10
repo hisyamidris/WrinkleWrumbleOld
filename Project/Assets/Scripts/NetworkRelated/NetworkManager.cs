@@ -40,6 +40,7 @@ public class NetworkManager : MonoBehaviour {
 
 	void OnJoinedRoom() {
 		Debug.Log ("OnJoinedRoom");
+		if (PhotonNetwork.isMasterClient)
 		SpawnAllObjects ();
 		SpawnMyPlayer();
 
@@ -52,7 +53,8 @@ public class NetworkManager : MonoBehaviour {
 		}
 
 		SpawnSpot mySpawnSpot = spawnSpots[ Random.Range (0, spawnSpots.Length) ];
-		GameObject myPlayerGO = (GameObject)PhotonNetwork.Instantiate("Player1", mySpawnSpot.transform.position, mySpawnSpot.transform.rotation, 0);
+		string[] playerNum = {"Player1","Player2","Player3","Player4"};
+		GameObject myPlayerGO = (GameObject)PhotonNetwork.Instantiate(playerNum[PhotonNetwork.room.playerCount-1], mySpawnSpot.transform.position, mySpawnSpot.transform.rotation, 0);
 		//standbyCamera.SetActive(false);
 
 		//((MonoBehaviour)myPlayerGO.GetComponent("FPSInputController")).enabled = true;
@@ -60,9 +62,10 @@ public class NetworkManager : MonoBehaviour {
 	}
 
 	void SpawnAllObjects(){
-		SpawnSpot mySpawnSpot = spawnSpots[ Random.Range (0, spawnSpots.Length) ];
-		GameObject myObject = (GameObject)PhotonNetwork.Instantiate("Book", mySpawnSpot.transform.position, mySpawnSpot.transform.rotation, 0);
-		myObject.transform.localScale = new Vector3(1f, 1f, 1f);
-		myObject.name = myObject.name.Replace("(Clone)", "");
+
+						SpawnSpot mySpawnSpot = spawnSpots [Random.Range (0, spawnSpots.Length)];
+						GameObject myObject = (GameObject)PhotonNetwork.Instantiate ("Book", mySpawnSpot.transform.position, mySpawnSpot.transform.rotation, 0);
+						myObject.transform.localScale = new Vector3 (1f, 1f, 1f);
+						myObject.name = myObject.name.Replace ("(Clone)", "");
 	}
 }

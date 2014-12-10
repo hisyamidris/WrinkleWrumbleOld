@@ -6,7 +6,7 @@ public class healthBarUpdate : MonoBehaviour {
 
 	public Slider healthBarSlider;  //reference for slider
 	public Text gameOverText;   //reference for text
-	private bool isGameOver = false; //flag to see if game is over
+	static public bool isGameOver = false; //flag to see if game is over
 	
 	void Start(){
 		gameOverText.enabled = false; //disable GameOver text on start
