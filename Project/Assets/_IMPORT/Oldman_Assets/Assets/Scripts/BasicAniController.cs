@@ -58,6 +58,8 @@ public class BasicAniController : Photon.MonoBehaviour {
 	private string objectName = "";
 	public AudioClip ThrowingSFX;
 
+	public static bool inPain;
+
 	// Collect Animator component
 	void Start () 
 	{
@@ -217,6 +219,12 @@ public class BasicAniController : Photon.MonoBehaviour {
 		// DEBUG
 		if(Input.GetKeyDown (KeyCode.P))
 			OnHitByObject();
+
+		if (inPain) {
+			audio.PlayOneShot(PainSFX[Random.Range(0, PainSFX.Length)]);
+			inPain = false;
+
+				}
 	}
 
 	//

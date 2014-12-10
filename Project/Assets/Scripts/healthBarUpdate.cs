@@ -30,10 +30,12 @@ public class healthBarUpdate : MonoBehaviour {
 			if (healthBarSlider.value > 0 && other.rigidbody.velocity.magnitude >= 1.0f){
 				Debug.Log ("You got slammed by " + other.gameObject.name + " moving at " + Vector3.Magnitude (other.rigidbody.velocity));
 				healthBarSlider.value -= Vector3.Magnitude (other.rigidbody.velocity) / 10; 
+				BasicAniController.inPain = true;
 				}
 			} else if (other.gameObject.tag == "Throwable" && other.rigidbody.velocity.magnitude >= 1.0f) {
 				Debug.Log ("You got hit by " + other.gameObject.name + " moving at " + Vector3.Magnitude (other.rigidbody.velocity));
 				healthBarSlider.value -= Vector3.Magnitude (other.rigidbody.velocity) / 100;
+				BasicAniController.inPain = true;
 				}
 		if (healthBarSlider.value < 0.01) {
 			isGameOver = true;    //set game over to true

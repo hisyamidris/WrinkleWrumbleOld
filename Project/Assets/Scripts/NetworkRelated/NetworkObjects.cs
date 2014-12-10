@@ -3,8 +3,8 @@ using System.Collections;
 
 public class NetworkObjects : Photon.MonoBehaviour {
 		
-		Vector3 realPosition = Vector3.zero;
-		Quaternion realRotation = Quaternion.identity;
+//		Vector3 realPosition = Vector3.zero;
+//		Quaternion realRotation = Quaternion.identity;
 		Vector3 realScale = Vector3.one;
 
 		Vector3 realPosition2 = Vector3.zero;
