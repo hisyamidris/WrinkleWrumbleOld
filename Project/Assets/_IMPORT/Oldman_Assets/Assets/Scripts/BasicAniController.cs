@@ -237,7 +237,7 @@ public class BasicAniController : MonoBehaviour {
 	void OnTriggerEnter(Collider theTrigger)
 	{
 		if(theTrigger.gameObject.tag == "Throwable" && 
-		   theTrigger.rigidbody.velocity.y < 1f && 
+		   theTrigger.rigidbody.velocity.magnitude < 1.0f && 
 		   !(hasCube)
 		   //&& Input.GetKey(KeyCode.J)
 		   )
