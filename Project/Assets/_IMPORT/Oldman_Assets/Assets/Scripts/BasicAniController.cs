@@ -168,7 +168,7 @@ public class BasicAniController : Photon.MonoBehaviour {
 		}
 
 		// Push Logic
-		if(Input.GetKey (KeyCode.I))
+		if(Input.GetKeyDown (KeyCode.I))
 		{
 			isPush = true;
 			animation_vals.SetBool ("Push", isPush);
@@ -257,7 +257,7 @@ public class BasicAniController : Photon.MonoBehaviour {
 		   theTrigger.rigidbody.velocity.magnitude < 1.0f && 
 		   !(hasCube)
 		   //&& Input.GetKey(KeyCode.J)
-		   && theTrigger.GetComponent<PhotonView>().instantiationId != 0
+		   //&& theTrigger.GetComponent<PhotonView>().instantiationId != 0
 		   )
 		{
 			hasCube = true;
@@ -267,14 +267,30 @@ public class BasicAniController : Photon.MonoBehaviour {
 			//grabbedObject = theTrigger.GetComponents<GameObject>() as GameObject;
 			//Debug.Log("subId: " + theTrigger.GetComponent<PhotonView>().subId);
 			//objectViewID = theTrigger.GetComponent<PhotonView>().subId;
-			Debug.Log(theTrigger.gameObject.name);
+			//Debug.Log(theTrigger.gameObject.name);
 			objectName = theTrigger.gameObject.name;
 			grabbedObject = GameObject.Find(objectName);
 			//collider.isTrigger = true;
 			//theTrigger.renderer.enabled = false;
 			//theTrigger.collider.enabled = false;
-			if (PhotonNetwork.isMasterClient)
-				PhotonNetwork.Destroy (theTrigger.gameObject);
+
+//					if(theTrigger.GetComponent<PhotonView>().instantiationId == 0)
+			//Destroy (theTrigger.gameObject);
+//			if (PhotonNetwork.isMasterClient)
+//			PhotonNetwork.Destroy (theTrigger.gameObject);
+//
+//			Destroy (theTrigger.gameObject);
+
+			theTrigger.GetComponent<PhotonView>().RPC("killObject", PhotonTargets.All);
 		}
 	}
+
+//	[RPC]
+//	public void killObject(Collider theTrigger){
+//		if(theTrigger.GetComponent<PhotonView>().instantiationId == 0)
+//			Destroy (theTrigger.gameObject);
+//		else if (PhotonNetwork.isMasterClient)
+//			PhotonNetwork.Destroy (theTrigger.gameObject);
+//
+//	}
 }

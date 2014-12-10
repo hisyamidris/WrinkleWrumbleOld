@@ -9,6 +9,7 @@ public class healthBarUpdate : MonoBehaviour {
 	static public bool isGameOver = false; //flag to see if game is over
 	
 	void Start(){
+		healthBarSlider.value = 1;
 		gameOverText.enabled = false; //disable GameOver text on start
 	}
 	
@@ -26,8 +27,10 @@ public class healthBarUpdate : MonoBehaviour {
 	void OnTriggerEnter(Collider other){
 		//if player triggers fire object and health is greater than 0
 		if (other.gameObject.tag == "Pushable") {
-			if (healthBarSlider.value > 0 && other.rigidbody.velocity != Vector3.zero)
-				healthBarSlider.value -= Vector3.Magnitude (other.rigidbody.velocity) / 10;  
+			if (healthBarSlider.value > 0 && other.rigidbody.velocity.magnitude >= 1.0f){
+				Debug.Log ("You got slammed by " + other.gameObject.name + " moving at " + Vector3.Magnitude (other.rigidbody.velocity));
+				healthBarSlider.value -= Vector3.Magnitude (other.rigidbody.velocity) / 10; 
+				}
 			} else if (other.gameObject.tag == "Throwable" && other.rigidbody.velocity.magnitude >= 1.0f) {
 				Debug.Log ("You got hit by " + other.gameObject.name + " moving at " + Vector3.Magnitude (other.rigidbody.velocity));
 				healthBarSlider.value -= Vector3.Magnitude (other.rigidbody.velocity) / 100;
