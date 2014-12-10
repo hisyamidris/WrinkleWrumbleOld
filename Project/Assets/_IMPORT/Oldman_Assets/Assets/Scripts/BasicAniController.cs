@@ -17,6 +17,9 @@ public class BasicAniController : MonoBehaviour {
 	// Death parameters
 	private bool isDead = false;
 
+	// Push
+	private bool isPush = false;
+
 	// Running and rotation parameters
 	public float runSpeed = 4.5f;
 	public float rotationSpeed = 100f;
@@ -69,7 +72,7 @@ public class BasicAniController : MonoBehaviour {
 	}
 	
 	//
-	// Basic Movement handler and throw logic
+	// Basic Movement handler, push handler, and throw logic
 	// DEBUG: Death tester	
 	//
 	void FixedUpdate()
@@ -100,9 +103,7 @@ public class BasicAniController : MonoBehaviour {
 
 		// Remove backwards movement
 		if(leMovement < 0)
-		{
 			leMovement = 0;
-		}
 		
 		// Check if we are grounded
 		grounded = Physics.CheckSphere(groundCheck.position, groundRadius, whatIsGround);
@@ -162,6 +163,18 @@ public class BasicAniController : MonoBehaviour {
 			newObject.rigidbody.AddRelativeForce (Vector3.forward * 700f);
 			newObject.name = newObject.name.Replace("(Clone)", "");
 			audio.PlayOneShot (ThrowingSFX);
+		}
+
+		// Push Logic
+		if(Input.GetKey (KeyCode.I))
+		{
+			isPush = true;
+			animation_vals.SetBool ("Push", isPush);
+		}
+		else if(isPush)
+		{
+			isPush = false;
+			animation_vals.SetBool ("Push", isPush);
 		}
 
 		// DEBUG: death logic
