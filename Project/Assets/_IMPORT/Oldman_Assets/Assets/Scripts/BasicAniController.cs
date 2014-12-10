@@ -10,7 +10,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class BasicAniController : MonoBehaviour {
+public class BasicAniController : Photon.MonoBehaviour {
 	
 	Animator animation_vals;
 
@@ -54,6 +54,7 @@ public class BasicAniController : MonoBehaviour {
 
 	//GameObject
 	public static GameObject grabbedObject = null;
+	private int objectViewID;
 	private string objectName = "";
 	public AudioClip ThrowingSFX;
 
@@ -158,9 +159,10 @@ public class BasicAniController : MonoBehaviour {
 			animation_vals.SetBool ("Throw", isThrowing);
 			//Instantiate(ThrowableCube, ThrowPosition.position, ThrowPosition.rotation);
 			//GameObject newObject = Instantiate(grabbedObject, ThrowPosition.position, ThrowPosition.rotation) as GameObject;
-			GameObject newObject = Instantiate(Resources.Load(objectName, typeof(GameObject)), ThrowPosition.position, ThrowPosition.rotation) as GameObject;
+			objectName = objectName.Replace("(Clone)", "");
+			GameObject newObject = PhotonNetwork.Instantiate(objectName, ThrowPosition.position, ThrowPosition.rotation, 0) as GameObject;
 			newObject.transform.localScale = new Vector3(1f, 1f, 1f);
-			newObject.rigidbody.AddRelativeForce (Vector3.forward * 700f);
+			newObject.rigidbody.AddRelativeForce (new Vector3(0.0f,0.3f,1.0f) * 300f);
 			newObject.name = newObject.name.Replace("(Clone)", "");
 			audio.PlayOneShot (ThrowingSFX);
 		}
@@ -170,11 +172,13 @@ public class BasicAniController : MonoBehaviour {
 		{
 			isPush = true;
 			animation_vals.SetBool ("Push", isPush);
+			objectInteraction.push = true;
 		}
 		else if(isPush)
 		{
 			isPush = false;
 			animation_vals.SetBool ("Push", isPush);
+			objectInteraction.push = false;
 		}
 
 		// DEBUG: death logic
@@ -253,6 +257,7 @@ public class BasicAniController : MonoBehaviour {
 		   theTrigger.rigidbody.velocity.magnitude < 1.0f && 
 		   !(hasCube)
 		   //&& Input.GetKey(KeyCode.J)
+		   && theTrigger.GetComponent<PhotonView>().instantiationId != 0
 		   )
 		{
 			hasCube = true;
@@ -260,12 +265,16 @@ public class BasicAniController : MonoBehaviour {
 			//ItemPickup.CubeRender = theTrigger.GetComponent<MeshRenderer> ();
 			//ItemPickup.CubeFilter = theTrigger.GetComponent<MeshFilter> ();
 			//grabbedObject = theTrigger.GetComponents<GameObject>() as GameObject;
+			//Debug.Log("subId: " + theTrigger.GetComponent<PhotonView>().subId);
+			objectViewID = theTrigger.GetComponent<PhotonView>().subId;
+			Debug.Log(theTrigger.gameObject.name);
 			objectName = theTrigger.gameObject.name;
 			grabbedObject = GameObject.Find(objectName);
 			//collider.isTrigger = true;
 			//theTrigger.renderer.enabled = false;
 			//theTrigger.collider.enabled = false;
-			Destroy (theTrigger.gameObject);
+			if(PhotonNetwork.isMasterClient)
+			PhotonNetwork.Destroy (theTrigger.gameObject);
 		}
 	}
 }
