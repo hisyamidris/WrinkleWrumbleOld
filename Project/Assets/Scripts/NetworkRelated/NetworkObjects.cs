@@ -102,6 +102,6 @@ public class NetworkObjects : Photon.MonoBehaviour {
 	}
 
 	[RPC]
-	public void moveObject(){
+	public void createObject(){
 	}
 }

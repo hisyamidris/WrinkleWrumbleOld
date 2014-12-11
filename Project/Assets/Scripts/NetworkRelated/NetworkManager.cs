@@ -96,8 +96,6 @@ using System.Collections;
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using UnityEngine;
-
 public class NetworkManager: Photon.MonoBehaviour
 {
 		public GameObject standbyCamera;

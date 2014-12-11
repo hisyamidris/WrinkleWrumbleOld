@@ -11,7 +11,14 @@ public class ProcParticles : MonoBehaviour {
 
 	private float eTime = 0f; // elapsed time.
 	private bool SwitchColor = false;
-	
+
+	private BasicAniController basicAniController;
+
+	void Start()
+	{
+		basicAniController = GetComponentInParent<BasicAniController> ();
+	}
+
 	void Update()
 	{
 		int particleCount;
@@ -50,5 +57,7 @@ public class ProcParticles : MonoBehaviour {
 		}
 
 		mainPS.SetParticles (tempParticles, particleCount);
+
+		mainPS.enableEmission = basicAniController.hasCube;
 	}
 }

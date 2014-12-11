@@ -63,13 +63,15 @@ public class BasicAniController : Photon.MonoBehaviour {
 	public AudioClip ThrowingSFX;
 
 	public static bool inPain;
+	private healthBarUpdate HealthBarUpdate;
 
 	// Collect Animator component
 	void Start () 
 	{
+		HealthBarUpdate = GetComponentInChildren<healthBarUpdate> ();
 		animation_vals = GetComponent<Animator>();
 		audio.clip = RunningSFX;
-		audio.volume = 0.75f;
+		audio.volume = 0.1f;
 
 		isDead = false;
 
@@ -185,7 +187,10 @@ public class BasicAniController : Photon.MonoBehaviour {
 		}
 
 		// DEBUG: death logic
-		if(Input.GetKeyDown (KeyCode.O) || (healthBarUpdate.isGameOver))
+		if(
+			//Input.GetKeyDown (KeyCode.O) || 
+		   (HealthBarUpdate.isGameOver)
+		   )
 		{
 			isDead = true;
 			animation_vals.SetBool ("Ground", true);

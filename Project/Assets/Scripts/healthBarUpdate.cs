@@ -5,11 +5,13 @@ using UnityEngine.UI;
 public class healthBarUpdate : MonoBehaviour {
 	
 
-	static public bool isGameOver = false; //flag to see if game is over
+	public bool isGameOver = false; //flag to see if game is over
 	public float pushThreshold = 1.0f;
 
 	private Slider healthBarSlider;  //reference for slider
 	private Text gameOverText;   //reference for text
+
+	public int pHealth = 100;
 
 	void Start()
 	{
@@ -19,6 +21,7 @@ public class healthBarUpdate : MonoBehaviour {
 		healthBarSlider.value = 1;
 		gameOverText.enabled = false; //disable GameOver text on start
 		isGameOver = false;
+		pHealth = 100;
 	}
 
 	void Update () 
@@ -27,6 +30,7 @@ public class healthBarUpdate : MonoBehaviour {
 		{
 			Debug.Log ("Current Health: " + healthBarSlider.value);
 		}
+
 		//check if game is over i.e., health is greater than 0
 //		if(!isGameOver)
 //			transform.Translate(Input.GetAxis("Horizontal")*Time.deltaTime*10f, 0, 0); //get input
@@ -43,6 +47,7 @@ public class healthBarUpdate : MonoBehaviour {
 				Debug.Log ("You got slammed by " + other.gameObject.name + " moving at " + Vector3.Magnitude (other.rigidbody.velocity));
 				healthBarSlider.value -= Vector3.Magnitude (other.rigidbody.velocity) / 10; 
 				BasicAniController.inPain = true;
+				pHealth = (int) Mathf.Round(healthBarSlider.value * 100.0f);
 			}
 		} 
 		else if (other.gameObject.tag == "Throwable" && other.rigidbody.velocity.magnitude >= pushThreshold) 
