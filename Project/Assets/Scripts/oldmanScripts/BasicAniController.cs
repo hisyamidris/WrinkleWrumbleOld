@@ -49,14 +49,17 @@ public class BasicAniController : Photon.MonoBehaviour {
 	public float ThrowTime = 1f;
 	public float ThrowForce = 500f;
 	private bool isThrowing = false;
+
 	public bool hasCube = false;
+	public MeshRenderer CubeRender;
+	public MeshFilter CubeFilter;
+
 	private float eTime = 0f;
 
 
 	//GameObject
-	public static GameObject grabbedObject = null;
 	//private int objectViewID;
-	private string objectName = "";
+	public string objectName = "";
 	public AudioClip ThrowingSFX;
 
 	public static bool inPain;
@@ -69,7 +72,6 @@ public class BasicAniController : Photon.MonoBehaviour {
 		audio.volume = 0.75f;
 
 		isDead = false;
-		grabbedObject = new GameObject ();
 
 		// Declare array size. Apparently Unity does this for you.
 		//Pain = new AudioClip[3];
@@ -161,12 +163,10 @@ public class BasicAniController : Photon.MonoBehaviour {
 			hasCube = false;
 			animation_vals.SetBool ("Throw", isThrowing);
 			//Instantiate(ThrowableCube, ThrowPosition.position, ThrowPosition.rotation);
-			//GameObject newObject = Instantiate(grabbedObject, ThrowPosition.position, ThrowPosition.rotation) as GameObject;
 			objectName = objectName.Replace("(Clone)", "");
 			GameObject newObject = PhotonNetwork.Instantiate(objectName, ThrowPosition.position, ThrowPosition.rotation, 0) as GameObject;
 			newObject.transform.localScale = new Vector3(1f, 1f, 1f);
 			newObject.rigidbody.AddRelativeForce (new Vector3(0.0f,0.3f,1.0f) * ThrowForce);
-			newObject.name = newObject.name.Replace("(Clone)", "");
 			audio.PlayOneShot (ThrowingSFX);
 		}
 
@@ -264,7 +264,8 @@ public class BasicAniController : Photon.MonoBehaviour {
 	{
 		if(theTrigger.gameObject.tag == "Throwable" && 
 		   theTrigger.rigidbody.velocity.magnitude < 1.0f && 
-		   !(hasCube)
+		   !(hasCube) &&
+		   Input.GetKey(KeyCode.J)
 		   //&& Input.GetKey(KeyCode.J)
 		   //&& theTrigger.GetComponent<PhotonView>().instantiationId != 0
 		   )
@@ -272,14 +273,12 @@ public class BasicAniController : Photon.MonoBehaviour {
 			hasCube = true;
 			//gameObject.transform.FindChild ("Particle System").gameObject.SetActive (true);
 			//Debug.Log (theTrigger.GetComponent<MeshRenderer>().name);
-			//ItemPickup.CubeRender = theTrigger.GetComponent<MeshRenderer> ();
-			//ItemPickup.CubeFilter = theTrigger.GetComponent<MeshFilter> ();
-			//grabbedObject = theTrigger.GetComponents<GameObject>() as GameObject;
+			//CubeRender = theTrigger.GetComponent<MeshRenderer> ();
+			//CubeFilter = theTrigger.GetComponent<MeshFilter> ();
 			//Debug.Log("subId: " + theTrigger.GetComponent<PhotonView>().subId);
 			//objectViewID = theTrigger.GetComponent<PhotonView>().subId;
 			//Debug.Log(theTrigger.gameObject.name);
 			objectName = theTrigger.gameObject.name;
-			grabbedObject = GameObject.Find(objectName);
 			//collider.isTrigger = true;
 			//theTrigger.renderer.enabled = false;
 			//theTrigger.collider.enabled = false;

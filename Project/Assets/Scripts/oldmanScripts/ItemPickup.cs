@@ -9,7 +9,10 @@ public class ItemPickup : MonoBehaviour {
 	
 	public AudioClip PickSFX;
 	private MeshRenderer CubeRender;
+	private MeshFilter CubeFilter;
 	private BasicAniController basicAniController;
+
+	private GameObject myGO;
 
 	private bool myTrigger = false;
 
@@ -38,10 +41,6 @@ public class ItemPickup : MonoBehaviour {
 			audio.PlayOneShot (PickSFX);
 			CubeRender.enabled = true;
 			myTrigger = true;
-			//transform.root.collider.isTrigger = false; // Reset the trigger.
 		}
-
-//		CubeRender = BasicAniController.grabbedObject.gameObject.GetComponent<MeshRenderer> ();
-//		CubeFilter = BasicAniController.grabbedObject.gameObject.GetComponent<MeshFilter> ();
 	}
 }
