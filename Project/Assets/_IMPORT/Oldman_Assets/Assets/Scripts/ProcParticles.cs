@@ -31,7 +31,7 @@ public class ProcParticles : MonoBehaviour {
 		if((particleCount == mainPS.maxParticles) && ((particleCount % 2) != 0))
 			--particleCount;
 
-		Debug.Log ("Particle Count: " + particleCount);
+		//Debug.Log ("Particle Count: " + particleCount);
 
 		if(SwitchColor)
 		{

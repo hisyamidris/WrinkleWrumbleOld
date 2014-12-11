@@ -47,6 +47,7 @@ public class BasicAniController : Photon.MonoBehaviour {
 	public GameObject ThrowableCube;
 	public Transform ThrowPosition;
 	public float ThrowTime = 1f;
+	public float ThrowForce = 500f;
 	private bool isThrowing = false;
 	private bool hasCube = false;
 	private float eTime = 0f;
@@ -164,7 +165,7 @@ public class BasicAniController : Photon.MonoBehaviour {
 			objectName = objectName.Replace("(Clone)", "");
 			GameObject newObject = PhotonNetwork.Instantiate(objectName, ThrowPosition.position, ThrowPosition.rotation, 0) as GameObject;
 			newObject.transform.localScale = new Vector3(1f, 1f, 1f);
-			newObject.rigidbody.AddRelativeForce (new Vector3(0.0f,0.3f,1.0f) * 300f);
+			newObject.rigidbody.AddRelativeForce (new Vector3(0.0f,0.3f,1.0f) * ThrowForce);
 			newObject.name = newObject.name.Replace("(Clone)", "");
 			audio.PlayOneShot (ThrowingSFX);
 		}
