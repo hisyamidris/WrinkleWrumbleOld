@@ -236,4 +236,5 @@ public class NetworkingMenu : MonoBehaviour
 		this.connectFailed = true;
 		Debug.Log("OnFailedToConnectToPhoton. StatusCode: " + parameters + " ServerAddress: " + PhotonNetwork.networkingPeer.ServerAddress);
 	}
+	
 }

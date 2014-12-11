@@ -49,7 +49,7 @@ public class BasicAniController : Photon.MonoBehaviour {
 	public float ThrowTime = 1f;
 	public float ThrowForce = 500f;
 	private bool isThrowing = false;
-	private bool hasCube = false;
+	public bool hasCube = false;
 	private float eTime = 0f;
 
 
@@ -270,6 +270,7 @@ public class BasicAniController : Photon.MonoBehaviour {
 		   )
 		{
 			hasCube = true;
+			//gameObject.transform.FindChild ("Particle System").gameObject.SetActive (true);
 			//Debug.Log (theTrigger.GetComponent<MeshRenderer>().name);
 			//ItemPickup.CubeRender = theTrigger.GetComponent<MeshRenderer> ();
 			//ItemPickup.CubeFilter = theTrigger.GetComponent<MeshFilter> ();

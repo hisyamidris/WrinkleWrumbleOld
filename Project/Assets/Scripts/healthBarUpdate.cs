@@ -4,15 +4,17 @@ using UnityEngine.UI;
 
 public class healthBarUpdate : MonoBehaviour {
 	
-	public Text gameOverText;   //reference for text
+
 	static public bool isGameOver = false; //flag to see if game is over
 	public float pushThreshold = 1.0f;
 
 	private Slider healthBarSlider;  //reference for slider
+	private Text gameOverText;   //reference for text
 
 	void Start()
 	{
 		healthBarSlider = GameObject.Find ("Canvas/Slider").GetComponent<Slider> ();
+		gameOverText = GameObject.Find ("Canvas/GameOver").GetComponent<Text>();
 
 		healthBarSlider.value = 1;
 		gameOverText.enabled = false; //disable GameOver text on start

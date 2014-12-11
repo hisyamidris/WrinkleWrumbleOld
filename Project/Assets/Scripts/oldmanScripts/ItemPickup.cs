@@ -9,11 +9,15 @@ public class ItemPickup : MonoBehaviour {
 	
 	public AudioClip PickSFX;
 	private MeshRenderer CubeRender;
+	private BasicAniController basicAniController;
+
+	private bool myTrigger = false;
 
 	void Start()
 	{
 		CubeRender = gameObject.GetComponent<MeshRenderer> ();
 		CubeRender.enabled = false;
+		basicAniController = GetComponentInParent<BasicAniController> ();
 	}
 	
 	//
@@ -22,16 +26,19 @@ public class ItemPickup : MonoBehaviour {
 	// DEBUG: using K for throwing object.
 	void Update()
 	{
-		if(Input.GetKeyDown(KeyCode.K))
+		if(Input.GetKeyDown(KeyCode.K) && basicAniController.hasCube == false)
 		{
 			CubeRender.enabled = false;
+			myTrigger = false;
 		}
 
-		if(transform.root.collider.isTrigger)
+		if(basicAniController.hasCube == true && myTrigger == false)
 		{
+			Debug.Log("Picked up an item");
 			audio.PlayOneShot (PickSFX);
 			CubeRender.enabled = true;
-			transform.root.collider.isTrigger = false; // Reset the trigger.
+			myTrigger = true;
+			//transform.root.collider.isTrigger = false; // Reset the trigger.
 		}
 
 //		CubeRender = BasicAniController.grabbedObject.gameObject.GetComponent<MeshRenderer> ();
