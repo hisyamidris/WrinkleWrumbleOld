@@ -258,9 +258,11 @@ public class NetworkManager: Photon.MonoBehaviour
 				GameObject myPlayerGO = (GameObject)PhotonNetwork.Instantiate (playerName, spawnSpotsPlayer [PhotonNetwork.room.playerCount - 1].transform.position, spawnSpotsPlayer [PhotonNetwork.room.playerCount - 1].transform.rotation, 0);
 				standbyCamera.SetActive(false);
 				((MonoBehaviour)myPlayerGO.GetComponent("BasicAniController")).enabled = true;
+				((MonoBehaviour)myPlayerGO.GetComponent("Health")).enabled = true;
 				myPlayerGO.transform.FindChild ("Main Camera").gameObject.SetActive (true);
 				myPlayerGO.transform.FindChild ("bodyColliderCheck").gameObject.SetActive (true);
 				myPlayerGO.transform.FindChild ("objectSpaceCollider").gameObject.SetActive (true);
+
 			}
 		}
 	}
