@@ -102,6 +102,7 @@ public class NetworkManager: Photon.MonoBehaviour
 		SpawnSpot[] spawnSpots;
 		SpawnSpotPlayer[] spawnSpotsPlayer;
 	public Transform playerPrefab;
+	public float respawnTimer = 0;
 	
 	public void Awake()
 	{
@@ -207,6 +208,8 @@ public class NetworkManager: Photon.MonoBehaviour
 			myPlayerGO.transform.FindChild ("Main Camera").gameObject.SetActive (true);
 			myPlayerGO.transform.FindChild ("bodyColliderCheck").gameObject.SetActive (true);
 			myPlayerGO.transform.FindChild ("objectSpaceCollider").gameObject.SetActive (true);
+			//((MonoBehaviour)myPlayerGO.transform.FindChild ("bodyColliderCheck").gameObject.GetComponent("healthBarUpdate")).enabled = true;
+			//myPlayerGO.transform.FindChild ("ItemPickup").gameObject.SetActive (true);
 		} else {
 			GameObject myPlayerGO = (GameObject)PhotonNetwork.Instantiate (playerNum [Random.Range(0, 3)], new Vector3 (11.0f, 0.0f, 11.0f), Quaternion.identity, 0);
 			standbyCamera.SetActive(false);
@@ -214,6 +217,7 @@ public class NetworkManager: Photon.MonoBehaviour
 			myPlayerGO.transform.FindChild ("Main Camera").gameObject.SetActive (true);
 			myPlayerGO.transform.FindChild ("bodyColliderCheck").gameObject.SetActive (true);
 			myPlayerGO.transform.FindChild ("objectSpaceCollider").gameObject.SetActive (true);
+			//myPlayerGO.transform.FindChild ("Item Pickup").gameObject.SetActive (true);
 		}
 		
 		
@@ -229,6 +233,17 @@ public class NetworkManager: Photon.MonoBehaviour
 			//			Debug.Log (spawnSpots[i].transform.position);
 			GameObject myObject = (GameObject)PhotonNetwork.Instantiate (objectList[i], spawnSpots[18-i].transform.position, spawnSpots[18-i].transform.rotation, 0);
 			myObject.transform.localScale = new Vector3 (1f, 1f, 1f);
+		}
+	}
+
+	void Update() {
+		if(respawnTimer > 0) {
+			respawnTimer -= Time.deltaTime;
+			
+			if(respawnTimer <= 0) {
+				// Time to respawn the player!
+				SpawnMyPlayer();
+			}
 		}
 	}
 }

@@ -11,12 +11,13 @@ public class ProcParticles : MonoBehaviour {
 
 	private float eTime = 0f; // elapsed time.
 	private bool SwitchColor = false;
+	public bool lowHealth = false;
 
-	private BasicAniController basicAniController;
+//	private BasicAniController basicAniController;
 
 	void Start()
 	{
-		basicAniController = GetComponentInParent<BasicAniController> ();
+//		basicAniController = GetComponentInParent<BasicAniController> ();
 	}
 
 	void Update()
@@ -43,21 +44,26 @@ public class ProcParticles : MonoBehaviour {
 		if(SwitchColor)
 		{
 			for(int i = 0; i < particleCount; i = i + 2)
-				tempParticles[i].color = Color.magenta;
+				if(!lowHealth) tempParticles[i].color = Color.magenta;
+			else  tempParticles[i].color = Color.red;
 
 			for(int i = 1; i < particleCount; i = i + 2)
-				tempParticles[i].color = Color.cyan;
+				if (!lowHealth) tempParticles[i].color = Color.cyan;
+			else tempParticles[i].color = Color.yellow;
 		}
 		else
 		{
 			for(int i = 0; i < particleCount; i = i + 2)
-				tempParticles[i].color = Color.cyan;
+				if (!lowHealth) tempParticles[i].color = Color.cyan;
+			else tempParticles[i].color = Color.yellow;
 			for(int i = 1; i < particleCount; i = i + 2)
-				tempParticles[i].color = Color.magenta;
+				if(!lowHealth) tempParticles[i].color = Color.magenta;
+			else  tempParticles[i].color = Color.red;
 		}
 
 		mainPS.SetParticles (tempParticles, particleCount);
 
-		mainPS.enableEmission = basicAniController.hasCube;
+		GetComponent<PhotonView>().RPC("showParticles", PhotonTargets.All);
+		//mainPS.enableEmission = basicAniController.hasCube;
 	}
 }

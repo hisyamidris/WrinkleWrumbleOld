@@ -6,16 +6,6 @@ public class objectInteraction : MonoBehaviour {
 	public float pushPower = 10.0F;
 	public static bool push = false;
 
-	// Use this for initialization
-	void Start() {
-
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
 	string objectName = "";
 	Vector3 objectPosition = Vector3.zero;
 	Quaternion objectRotation = Quaternion.identity;

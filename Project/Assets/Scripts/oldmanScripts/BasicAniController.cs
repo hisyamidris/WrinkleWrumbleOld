@@ -1,6 +1,7 @@
 ﻿/*
 *	BasicAniController.cs
 *	Sahle Alturaigi
+*	Akmal Idris
 *		Dec. 8th, 2014
 *
 *	Notes: Ctrl + f and type "DEBUG" to find all the things we need to remove
@@ -14,6 +15,7 @@ public class BasicAniController : Photon.MonoBehaviour {
 	
 	Animator animation_vals;
 
+	public bool isGenderMale;
 	// Death parameters
 	private bool isDead = false;
 
@@ -62,13 +64,18 @@ public class BasicAniController : Photon.MonoBehaviour {
 	public string objectName = "";
 	public AudioClip ThrowingSFX;
 
-	public static bool inPain;
+	public bool inPain;
 	private healthBarUpdate HealthBarUpdate;
+	private ProcParticles procParticles;
 
+	void Awake(){
+		HealthBarUpdate = gameObject.GetComponentInChildren<healthBarUpdate> ();
+		procParticles = gameObject.GetComponentInChildren<ProcParticles> ();
+	}
 	// Collect Animator component
 	void Start () 
 	{
-		HealthBarUpdate = GetComponentInChildren<healthBarUpdate> ();
+
 		animation_vals = GetComponent<Animator>();
 		audio.clip = RunningSFX;
 		audio.volume = 0.1f;
@@ -85,6 +92,7 @@ public class BasicAniController : Photon.MonoBehaviour {
 	//
 	void FixedUpdate()
 	{	
+		CheckHealth ();
 		// Run footstep SFX
 		CheckFootSteps();
 
@@ -169,7 +177,8 @@ public class BasicAniController : Photon.MonoBehaviour {
 			GameObject newObject = PhotonNetwork.Instantiate(objectName, ThrowPosition.position, ThrowPosition.rotation, 0) as GameObject;
 			newObject.transform.localScale = new Vector3(1f, 1f, 1f);
 			newObject.rigidbody.AddRelativeForce (new Vector3(0.0f,0.3f,1.0f) * ThrowForce);
-			audio.PlayOneShot (ThrowingSFX);
+			//audio.PlayOneShot (ThrowingSFX);
+			GetComponent<PhotonView>().RPC("playSound", PhotonTargets.All, 1);
 		}
 
 		// Push Logic
@@ -184,6 +193,13 @@ public class BasicAniController : Photon.MonoBehaviour {
 			isPush = false;
 			animation_vals.SetBool ("Push", isPush);
 			objectInteraction.push = false;
+		}
+
+		// SoundTest
+		if(Input.GetKeyDown (KeyCode.V))
+		{
+			GetComponent<PhotonView>().RPC("playSound", PhotonTargets.All, 0);
+			Debug.Log (HealthBarUpdate.pHealth);
 		}
 
 		// DEBUG: death logic
@@ -218,7 +234,9 @@ public class BasicAniController : Photon.MonoBehaviour {
 				rigidbody.AddForce(new Vector3(0f, jumpForce, 0f));
 				delayJump = true;
 
-				audio.PlayOneShot (JumpSFX);
+				if(isGenderMale)
+					GetComponent<PhotonView>().RPC("playSound", PhotonTargets.All, 7);
+				else GetComponent<PhotonView>().RPC("playSound", PhotonTargets.All, 3);
 			}
 		}
 
@@ -227,7 +245,10 @@ public class BasicAniController : Photon.MonoBehaviour {
 			OnHitByObject();
 
 		if (inPain) {
-			audio.PlayOneShot(PainSFX[Random.Range(0, PainSFX.Length)]);
+			//audio.PlayOneShot(PainSFX[Random.Range(0, PainSFX.Length)]);
+			if(isGenderMale)
+				GetComponent<PhotonView>().RPC("playSound", PhotonTargets.All, Random.Range(8, 10));
+			else GetComponent<PhotonView>().RPC("playSound", PhotonTargets.All, Random.Range (4, 6));
 			inPain = false;
 
 				}
@@ -253,13 +274,14 @@ public class BasicAniController : Photon.MonoBehaviour {
 			   Input.GetButton ("Strafe"))
 			{
 				if(!audio.isPlaying)
-					audio.Play ();
+					GetComponent<PhotonView>().RPC("playSoundFootsteps", PhotonTargets.All, true);
 			}
 			else
-				audio.Pause();
+				GetComponent<PhotonView>().RPC("playSoundFootsteps", PhotonTargets.All, false);
 		}
 		else
-			audio.Pause ();
+			//audio.Pause ();
+			GetComponent<PhotonView>().RPC("playSoundFootsteps", PhotonTargets.All, false);
 	}
 
 	//
@@ -296,6 +318,42 @@ public class BasicAniController : Photon.MonoBehaviour {
 //			Destroy (theTrigger.gameObject);
 
 			theTrigger.GetComponent<PhotonView>().RPC("killObject", PhotonTargets.All);
+			GetComponent<PhotonView>().RPC("playSound", PhotonTargets.All, 0);
+		}
+	}
+
+//	void OnTriggerStay(Collider other) {
+//		if (other.gameObject == null)
+//						HealthBarUpdate.InCharacterCollider = false;
+//		else HealthBarUpdate.InCharacterCollider = true;
+//		}
+
+	void CheckHealth(){
+		if(HealthBarUpdate.pHealth < 25) procParticles.lowHealth = true;
+		else procParticles.lowHealth = false;
+
+		if (HealthBarUpdate.pHealth < 1)
+						Die ();
+	}
+
+	void Die() {
+		if( GetComponent<PhotonView>().instantiationId==0 ) {
+			Destroy(gameObject);
+		}
+		else {
+			if( GetComponent<PhotonView>().isMine ) {
+				if( gameObject.tag == "Player" ) {		// This is my actual PLAYER object, then initiate the respawn process
+					NetworkManager nm = GameObject.FindObjectOfType<NetworkManager>();
+					
+					nm.standbyCamera.SetActive(true);
+					nm.respawnTimer = 3f;
+				}
+				else if( gameObject.tag == "Bot" ) {
+					Debug.LogError("WARNING: No bot respawn code exists!");
+				}
+				
+				PhotonNetwork.Destroy(gameObject);
+			}
 		}
 	}
 

@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class healthBarUpdate : MonoBehaviour {
-	
 
 	public bool isGameOver = false; //flag to see if game is over
 	public float pushThreshold = 1.0f;
@@ -12,12 +11,15 @@ public class healthBarUpdate : MonoBehaviour {
 	private Text gameOverText;   //reference for text
 
 	public int pHealth = 100;
+	public bool InCharacterCollider = false;
 
-	void Start()
+	private BasicAniController basicAniController;
+
+	void Awake()
 	{
 		healthBarSlider = GameObject.Find ("Canvas/Slider").GetComponent<Slider> ();
 		gameOverText = GameObject.Find ("Canvas/GameOver").GetComponent<Text>();
-
+		basicAniController = GetComponentInParent<BasicAniController> ();
 		healthBarSlider.value = 1;
 		gameOverText.enabled = false; //disable GameOver text on start
 		isGameOver = false;
@@ -42,11 +44,11 @@ public class healthBarUpdate : MonoBehaviour {
 		//if player triggers fire object and health is greater than 0
 		if (other.gameObject.tag == "Pushable") 
 		{
-			if (healthBarSlider.value > 0 && other.rigidbody.velocity.magnitude >= pushThreshold)
+			if (this.healthBarSlider.value > 0 && other.rigidbody.velocity.magnitude >= pushThreshold && !InCharacterCollider)
 			{
 				Debug.Log ("You got slammed by " + other.gameObject.name + " moving at " + Vector3.Magnitude (other.rigidbody.velocity));
 				healthBarSlider.value -= Vector3.Magnitude (other.rigidbody.velocity) / 10; 
-				BasicAniController.inPain = true;
+				basicAniController.inPain = true;
 				pHealth = (int) Mathf.Round(healthBarSlider.value * 100.0f);
 			}
 		} 
@@ -54,7 +56,8 @@ public class healthBarUpdate : MonoBehaviour {
 		{
 			Debug.Log ("You got hit by " + other.gameObject.name + " moving at " + Vector3.Magnitude (other.rigidbody.velocity));
 			healthBarSlider.value -= Vector3.Magnitude (other.rigidbody.velocity) / 100;
-			BasicAniController.inPain = true;
+			basicAniController.inPain = true;
+			pHealth = (int) Mathf.Round(healthBarSlider.value * 100.0f);
 		}
 		if (healthBarSlider.value < 0.01) 
 		{
