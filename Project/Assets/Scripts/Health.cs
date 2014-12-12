@@ -4,7 +4,7 @@ using System.Collections;
 public class Health : MonoBehaviour {
 	
 	public float hitPoints = 100f;
-	float currentHitPoints;
+	public float currentHitPoints;
 	
 	// Use this for initialization
 	void Start () {

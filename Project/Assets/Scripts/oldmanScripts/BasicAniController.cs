@@ -201,13 +201,13 @@ public class BasicAniController : Photon.MonoBehaviour {
 		if(Input.GetKeyDown (KeyCode.V))
 		{
 			GetComponent<PhotonView>().RPC("playSound", PhotonTargets.All, 0);
-			Debug.Log (health.hitPoints);
+			Debug.Log (health.currentHitPoints);
 		}
 
 		// DEBUG: death logic
 		if(
 			//Input.GetKeyDown (KeyCode.O) || 
-		   (health.hitPoints < 1)
+		   (health.currentHitPoints < 1)
 		   )
 		{
 			isDead = true;
