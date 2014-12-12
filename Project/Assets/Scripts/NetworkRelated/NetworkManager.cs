@@ -246,15 +246,16 @@ public class NetworkManager: Photon.MonoBehaviour
 		}
 	}
 
+	public string playerName = "Player1";
+
 	void Update() {
 		if(respawnTimer > 0) {
 			respawnTimer -= Time.deltaTime;
 			
 			if(respawnTimer <= 0) {
-				string[] playerNum = {"Player1","Player2","Player3","Player4"};
 				// Time to respawn the player!
 				//SpawnMyPlayer();
-				GameObject myPlayerGO = (GameObject)PhotonNetwork.Instantiate (playerNum [respawnNum], spawnSpotsPlayer [PhotonNetwork.room.playerCount - 1].transform.position, spawnSpotsPlayer [PhotonNetwork.room.playerCount - 1].transform.rotation, 0);
+				GameObject myPlayerGO = (GameObject)PhotonNetwork.Instantiate (playerName, spawnSpotsPlayer [PhotonNetwork.room.playerCount - 1].transform.position, spawnSpotsPlayer [PhotonNetwork.room.playerCount - 1].transform.rotation, 0);
 				standbyCamera.SetActive(false);
 				((MonoBehaviour)myPlayerGO.GetComponent("BasicAniController")).enabled = true;
 				myPlayerGO.transform.FindChild ("Main Camera").gameObject.SetActive (true);

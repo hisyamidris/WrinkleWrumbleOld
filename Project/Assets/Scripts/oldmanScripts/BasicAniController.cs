@@ -67,10 +67,12 @@ public class BasicAniController : Photon.MonoBehaviour {
 	public bool inPain;
 	private healthBarUpdate HealthBarUpdate;
 	private ProcParticles procParticles;
+	private Health health;
 
 	void Awake(){
 		HealthBarUpdate = gameObject.GetComponentInChildren<healthBarUpdate> ();
 		procParticles = gameObject.GetComponentInChildren<ProcParticles> ();
+		health = gameObject.GetComponentInChildren<Health> ();
 	}
 	// Collect Animator component
 	void Start () 
@@ -199,13 +201,13 @@ public class BasicAniController : Photon.MonoBehaviour {
 		if(Input.GetKeyDown (KeyCode.V))
 		{
 			GetComponent<PhotonView>().RPC("playSound", PhotonTargets.All, 0);
-			Debug.Log (HealthBarUpdate.pHealth);
+			Debug.Log (health.hitPoints);
 		}
 
 		// DEBUG: death logic
 		if(
 			//Input.GetKeyDown (KeyCode.O) || 
-		   (HealthBarUpdate.isGameOver)
+		   (health.hitPoints < 1)
 		   )
 		{
 			isDead = true;
@@ -332,31 +334,42 @@ public class BasicAniController : Photon.MonoBehaviour {
 		if(HealthBarUpdate.pHealth < 25) procParticles.lowHealth = true;
 		else procParticles.lowHealth = false;
 
-		if (HealthBarUpdate.pHealth < 1)
-						Die ();
+//		if (HealthBarUpdate.pHealth < 1)
+//						Die ();
 	}
 
-	void Die() {
-		if( GetComponent<PhotonView>().instantiationId==0 ) {
-			Destroy(gameObject);
-		}
-		else {
-			if( GetComponent<PhotonView>().isMine ) {
-				if( gameObject.tag == "Player" ) {		// This is my actual PLAYER object, then initiate the respawn process
-					NetworkManager nm = GameObject.FindObjectOfType<NetworkManager>();
-					
-					nm.standbyCamera.SetActive(true);
-					nm.respawnTimer = 3f;
-				}
-				else if( gameObject.tag == "Bot" ) {
-					Debug.LogError("WARNING: No bot respawn code exists!");
-				}
-				
-				PhotonNetwork.Destroy(gameObject);
-			}
-		}
-	}
-
+//	void Die() {
+//		if( GetComponent<PhotonView>().instantiationId==0 ) {
+//			Destroy(gameObject);
+//		}
+//		else {
+//			if( GetComponent<PhotonView>().isMine ) {
+//				if( gameObject.tag == "Player" ) {		// This is my actual PLAYER object, then initiate the respawn process
+//					NetworkManager nm = GameObject.FindObjectOfType<NetworkManager>();
+//					
+//					nm.standbyCamera.SetActive(true);
+//					nm.respawnTimer = 3f;
+//				}
+//				else if( gameObject.tag == "Bot" ) {
+//					Debug.LogError("WARNING: No bot respawn code exists!");
+//				}
+//				
+//				PhotonNetwork.Destroy(gameObject);
+//			}
+//		}
+//	}
+//
+//	public float hitPoints = 100f;
+//	float currentHitPoints;
+//
+//	[RPC]
+//	public void TakeDamage(int amt) {
+//		HealthBarUpdate.pHealth -= amt;
+//		
+//		if(HealthBarUpdate.pHealth <= 0) {
+//			Die();
+//		}
+//	}
 //	[RPC]
 //	public void killObject(Collider theTrigger){
 //		if(theTrigger.GetComponent<PhotonView>().instantiationId == 0)
