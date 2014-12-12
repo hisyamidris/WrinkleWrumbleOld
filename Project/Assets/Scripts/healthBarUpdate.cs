@@ -34,7 +34,7 @@ public class healthBarUpdate : MonoBehaviour {
 		{
 			Debug.Log ("Current Health: " + healthBarSlider.value);
 		}
-		healthBarSlider.value = (float) (health.hitPoints / 100);
+		healthBarSlider.value = (float) (health.currentHitPoints / 100);
 
 		//check if game is over i.e., health is greater than 0
 		//		if(!isGameOver)
@@ -53,7 +53,7 @@ public class healthBarUpdate : MonoBehaviour {
 				//healthBarSlider.value -= Vector3.Magnitude (other.rigidbody.velocity) / 10; 
 				basicAniController.inPain = true;
 				//pHealth = (int) Mathf.Round(healthBarSlider.value * 100.0f);
-				GetComponentInParent<PhotonView>().RPC ("TakeDamage", PhotonTargets.AllBuffered, (int) Mathf.Round(Vector3.Magnitude (other.rigidbody.velocity))); 
+				GetComponentInParent<PhotonView>().RPC ("TakeDamage", PhotonTargets.All, (int) Mathf.Round(Vector3.Magnitude (other.rigidbody.velocity))); 
 			}
 		} 
 		else if (other.gameObject.tag == "Throwable" && other.rigidbody.velocity.magnitude >= pushThreshold) 
@@ -62,7 +62,7 @@ public class healthBarUpdate : MonoBehaviour {
 			healthBarSlider.value -= Vector3.Magnitude (other.rigidbody.velocity) / 100;
 			basicAniController.inPain = true;
 			//pHealth = (int) Mathf.Round(healthBarSlider.value * 100.0f);
-			GetComponentInParent<PhotonView>().RPC ("TakeDamage", PhotonTargets.AllBuffered, (int) Mathf.Round(Vector3.Magnitude (other.rigidbody.velocity)));
+			GetComponentInParent<PhotonView>().RPC ("TakeDamage", PhotonTargets.All, (int) Mathf.Round(Vector3.Magnitude (other.rigidbody.velocity)));
 		}
 		if (health.hitPoints < 1) 
 		{
