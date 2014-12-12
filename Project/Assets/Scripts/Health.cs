@@ -11,29 +11,10 @@ public class Health : MonoBehaviour {
 	void Start () {
 		currentHitPoints = hitPoints;
 	}
-	
-	[RPC]
-	public void TakeDamage(int amt) {
-		Debug.Log(gameObject.name + "is taking " + amt + " damage!");
-		currentHitPoints -= amt;
-		
-		if(currentHitPoints <= 0) {
-			respawnTimer = 3f;
-			Die();
-		}
-	}
-	
-	/*void OnGUI() {
-		if( GetComponent<PhotonView>().isMine && gameObject.tag == "Player" ) {
-			if( GUI.Button(new Rect (Screen.width-100, 0, 100, 40), "Suicide!") ) {
-				Die ();
-			}
-		}
-	}*/
 
-	void Die() 
+	void Update()
 	{
-
+		
 		if(respawnTimer > 0) 
 		{
 			respawnTimer -= Time.deltaTime;
@@ -41,7 +22,7 @@ public class Health : MonoBehaviour {
 			if(respawnTimer <= 0) 
 			{
 				string myName = gameObject.name.Replace("(Clone)", "");
-
+				
 				if( GetComponent<PhotonView>().instantiationId==0 ) 
 				{
 					Destroy(gameObject);
@@ -55,15 +36,34 @@ public class Health : MonoBehaviour {
 							NetworkManager nm = GameObject.FindObjectOfType<NetworkManager>();
 							
 							nm.standbyCamera.SetActive(true);
-							nm.respawnTimer = 3f;
+							nm.respawnTimer = 0.5f;
 							nm.playerName = myName;
 						}
 						
 						PhotonNetwork.Destroy(gameObject);
-
+						
 					}
 				}
 			}
 		}
 	}
+	
+	[RPC]
+	public void TakeDamage(int amt) {
+		Debug.Log(gameObject.name + "is taking " + amt + " damage!");
+		currentHitPoints -= amt;
+		
+		if(currentHitPoints <= 0) {
+			respawnTimer = 3f;
+		}
+	}
+	
+	/*void OnGUI() {
+		if( GetComponent<PhotonView>().isMine && gameObject.tag == "Player" ) {
+			if( GUI.Button(new Rect (Screen.width-100, 0, 100, 40), "Suicide!") ) {
+				Die ();
+			}
+		}
+	}*/
+
 }
