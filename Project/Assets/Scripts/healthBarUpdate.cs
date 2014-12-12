@@ -65,4 +65,5 @@ public class healthBarUpdate : MonoBehaviour {
 			gameOverText.enabled = true; //enable GameOver text
 		}
 	}
+
 }

@@ -17,7 +17,6 @@ public class NetworkParticles : MonoBehaviour {
 	{
 		//Debug.Log("Particle Show:" + basicAniController.hasCube);
 		//mainPS.enableEmission = tf;
-		mainPS.Emit = basicAniController.hasCube;
-		//mainPS.enableEmission = basicAniController.hasCube;
+		mainPS.enableEmission = basicAniController.hasCube;
 	}
 }

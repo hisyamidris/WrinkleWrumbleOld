@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 //public class NetworkManager : MonoBehaviour {
@@ -103,9 +104,12 @@ public class NetworkManager: Photon.MonoBehaviour
 		SpawnSpotPlayer[] spawnSpotsPlayer;
 	public Transform playerPrefab;
 	public float respawnTimer = 0;
+	public int respawnNum = 0;
+	private Image controlsImage;
 	
 	public void Awake()
 	{
+		controlsImage = GameObject.Find ("Canvas/Controls").GetComponent<Image>();
 		spawnSpots = GameObject.FindObjectsOfType<SpawnSpot>();
 		spawnSpotsPlayer = GameObject.FindObjectsOfType<SpawnSpotPlayer>();
 		// in case we started this demo with the wrong scene being active, simply load the menu scene
@@ -127,6 +131,12 @@ public class NetworkManager: Photon.MonoBehaviour
 		if (GUILayout.Button("Return to Lobby"))
 		{
 			PhotonNetwork.LeaveRoom();  // we will load the menu level when we successfully left the room
+		}
+		if (GUILayout.Button("Controls"))
+		{
+			if(controlsImage.enabled)
+				controlsImage.enabled = false;
+			else controlsImage.enabled = true;
 		}
 	}
 	
@@ -241,8 +251,15 @@ public class NetworkManager: Photon.MonoBehaviour
 			respawnTimer -= Time.deltaTime;
 			
 			if(respawnTimer <= 0) {
+				string[] playerNum = {"Player1","Player2","Player3","Player4"};
 				// Time to respawn the player!
-				SpawnMyPlayer();
+				//SpawnMyPlayer();
+				GameObject myPlayerGO = (GameObject)PhotonNetwork.Instantiate (playerNum [respawnNum], spawnSpotsPlayer [PhotonNetwork.room.playerCount - 1].transform.position, spawnSpotsPlayer [PhotonNetwork.room.playerCount - 1].transform.rotation, 0);
+				standbyCamera.SetActive(false);
+				((MonoBehaviour)myPlayerGO.GetComponent("BasicAniController")).enabled = true;
+				myPlayerGO.transform.FindChild ("Main Camera").gameObject.SetActive (true);
+				myPlayerGO.transform.FindChild ("bodyColliderCheck").gameObject.SetActive (true);
+				myPlayerGO.transform.FindChild ("objectSpaceCollider").gameObject.SetActive (true);
 			}
 		}
 	}
