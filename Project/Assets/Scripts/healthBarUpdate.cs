@@ -53,7 +53,7 @@ public class healthBarUpdate : MonoBehaviour {
 				//healthBarSlider.value -= Vector3.Magnitude (other.rigidbody.velocity) / 10; 
 				basicAniController.inPain = true;
 				//pHealth = (int) Mathf.Round(healthBarSlider.value * 100.0f);
-				GetComponentInParent<PhotonView>().RPC ("TakeDamage", PhotonTargets.All, (int) Mathf.Round(Vector3.Magnitude (other.rigidbody.velocity)* 10f)); 
+				GetComponentInParent<PhotonView>().RPC ("TakeDamage", PhotonTargets.All, (int) Mathf.Round(Vector3.Magnitude (other.rigidbody.velocity) * 10f)); 
 			}
 		} 
 		else if (other.gameObject.tag == "Throwable" && other.rigidbody.velocity.magnitude >= pushThreshold) 
