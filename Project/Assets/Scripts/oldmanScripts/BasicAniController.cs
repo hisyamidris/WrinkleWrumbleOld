@@ -298,16 +298,26 @@ public class BasicAniController : Photon.MonoBehaviour {
 	}
 
 	void OnTriggerStay(Collider other) {
-		if (other.gameObject.tag == "Pushable")
-						HealthBarUpdate.InCharacterCollider = true;
-		else HealthBarUpdate.InCharacterCollider = false;
+
+		if(other.gameObject.tag == "Throwable" && 
+		   other.rigidbody.velocity.magnitude < 1.0f && 
+		   !(hasCube) &&
+		   Input.GetKey(KeyCode.J)
+		   )
+
+		{
+			hasCube = true;
+			objectName = other.gameObject.name;
+			other.GetComponent<PhotonView>().RPC("killObject", PhotonTargets.All);
+			GetComponent<PhotonView>().RPC("playSound", PhotonTargets.All, 0);
+		}
 		}
 
-	void OnTriggerExit(Collider other) {
-		if (other.gameObject.tag == "Pushable")
-			HealthBarUpdate.InCharacterCollider = true;
-		else HealthBarUpdate.InCharacterCollider = false;
-	}
+//	void OnTriggerExit(Collider other) {
+//		if (other.gameObject.tag == "Pushable")
+//			HealthBarUpdate.InCharacterCollider = true;
+//		else HealthBarUpdate.InCharacterCollider = false;
+//	}
 	
 	void CheckHealth(){
 		if(health.currentHitPoints < 25) procParticles.lowHealth = true;
