@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Health : MonoBehaviour {
 	
-	public float hitPoints = 100f;
+	public float hitPoints = 40f;
 	public float currentHitPoints;
 	private float respawnTimer = 0;
 	
