@@ -22,6 +22,7 @@ public class NetworkVoiceBox : MonoBehaviour {
 	[RPC]
 	public void playSound(int soundIndex)
 	{
+
 		//Debug.Log("Play sound");
 		this.audio.PlayOneShot (SFX[soundIndex]);
 	}
@@ -29,6 +30,7 @@ public class NetworkVoiceBox : MonoBehaviour {
 	[RPC]
 	public void playSoundFootsteps(bool play)
 	{
+
 		//Debug.Log("Play sound footsteps");
 		audio.clip = SFX[2];
 		if(play) audio.Play ();

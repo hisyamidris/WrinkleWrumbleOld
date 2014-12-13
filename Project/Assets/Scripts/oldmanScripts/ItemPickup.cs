@@ -37,8 +37,8 @@ public class ItemPickup : MonoBehaviour {
 
 		if(basicAniController.hasCube == true && myTrigger == false)
 		{
-			Debug.Log("Picked up an item");
-			audio.PlayOneShot (PickSFX);
+			//Debug.Log("Picked up an item");
+			//audio.PlayOneShot (PickSFX);
 			myTrigger = true;
 		}
 	}
