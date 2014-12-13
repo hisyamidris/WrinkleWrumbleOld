@@ -64,7 +64,7 @@ public class healthBarUpdate : MonoBehaviour {
 			//pHealth = (int) Mathf.Round(healthBarSlider.value * 100.0f);
 			GetComponentInParent<PhotonView>().RPC ("TakeDamage", PhotonTargets.All, (int) Mathf.Round(Vector3.Magnitude (other.rigidbody.velocity)));
 		}
-		if (health.currentHitPoints < 1) 
+		if (healthBarSlider.value < 0.01) 
 		{
 			isGameOver = true;    //set game over to true
 			gameOverText.enabled = true; //enable GameOver text

@@ -324,11 +324,11 @@ public class BasicAniController : Photon.MonoBehaviour {
 		}
 	}
 
-//	void OnTriggerStay(Collider other) {
-//		if (other.gameObject == null)
-//						HealthBarUpdate.InCharacterCollider = false;
-//		else HealthBarUpdate.InCharacterCollider = true;
-//		}
+	void OnTriggerStay(Collider other) {
+		if (other.gameObject == null)
+						HealthBarUpdate.InCharacterCollider = false;
+		else HealthBarUpdate.InCharacterCollider = true;
+		}
 
 	void CheckHealth(){
 		if(HealthBarUpdate.pHealth < 25) procParticles.lowHealth = true;

@@ -21,29 +21,7 @@ public class Health : MonoBehaviour {
 			
 			if(respawnTimer <= 0) 
 			{
-				string myName = gameObject.name.Replace("(Clone)", "");
-				
-				if( GetComponent<PhotonView>().instantiationId==0 ) 
-				{
-					Destroy(gameObject);
-				}
-				else 
-				{
-					if( GetComponent<PhotonView>().isMine ) 
-					{
-						if( gameObject.tag == "Player" ) 
-						{		// This is my actual PLAYER object, then initiate the respawn process
-							NetworkManager nm = GameObject.FindObjectOfType<NetworkManager>();
-							
-							nm.standbyCamera.SetActive(true);
-							nm.respawnTimer = 0.5f;
-							nm.playerName = myName;
-						}
-						
-						PhotonNetwork.Destroy(gameObject);
-						
-					}
-				}
+				Die ();
 			}
 		}
 	}
@@ -55,6 +33,34 @@ public class Health : MonoBehaviour {
 		
 		if(currentHitPoints <= 0) {
 			respawnTimer = 3f;
+		}
+	}
+
+	void Die(){
+		string myName = gameObject.name.Replace("(Clone)", "");
+		
+		if( GetComponent<PhotonView>().instantiationId==0 ) 
+		{
+			//Wait for 1s
+
+			Destroy(gameObject);
+		}
+		else 
+		{
+			if( GetComponent<PhotonView>().isMine ) 
+			{
+				if( gameObject.tag == "Player" ) 
+				{		// This is my actual PLAYER object, then initiate the respawn process
+					NetworkManager nm = GameObject.FindObjectOfType<NetworkManager>();
+					
+					nm.standbyCamera.SetActive(true);
+					nm.respawnTimer = 0.5f;
+					nm.playerName = myName;
+				}
+				//Wait for 1s
+				PhotonNetwork.Destroy(gameObject);
+				
+			}
 		}
 	}
 	

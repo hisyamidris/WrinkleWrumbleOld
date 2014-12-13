@@ -216,6 +216,7 @@ public class NetworkManager: Photon.MonoBehaviour
 			standbyCamera.SetActive(false);
 			((MonoBehaviour)myPlayerGO.GetComponent("BasicAniController")).enabled = true;
 			((MonoBehaviour)myPlayerGO.GetComponent("Health")).enabled = true;
+			((MonoBehaviour)myPlayerGO.GetComponentInChildren<healthBarUpdate>()).enabled = true;
 			myPlayerGO.transform.FindChild ("Main Camera").gameObject.SetActive (true);
 			myPlayerGO.transform.FindChild ("bodyColliderCheck").gameObject.SetActive (true);
 			myPlayerGO.transform.FindChild ("objectSpaceCollider").gameObject.SetActive (true);
@@ -261,6 +262,7 @@ public class NetworkManager: Photon.MonoBehaviour
 				standbyCamera.SetActive(false);
 				((MonoBehaviour)myPlayerGO.GetComponent("BasicAniController")).enabled = true;
 				((MonoBehaviour)myPlayerGO.GetComponent("Health")).enabled = true;
+				((MonoBehaviour)myPlayerGO.GetComponentInChildren<healthBarUpdate>()).enabled = true;
 				myPlayerGO.transform.FindChild ("Main Camera").gameObject.SetActive (true);
 				myPlayerGO.transform.FindChild ("bodyColliderCheck").gameObject.SetActive (true);
 				myPlayerGO.transform.FindChild ("objectSpaceCollider").gameObject.SetActive (true);
