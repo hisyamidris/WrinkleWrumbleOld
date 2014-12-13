@@ -37,39 +37,25 @@ public class Health : MonoBehaviour {
 	}
 
 	void Die(){
-		string myName = gameObject.name.Replace("(Clone)", "");
+				string myName = gameObject.name.Replace ("(Clone)", "");
 		
-		if( GetComponent<PhotonView>().instantiationId==0 ) 
-		{
-			//Wait for 1s
+				if (GetComponent<PhotonView> ().instantiationId == 0) {
+						//Wait for 1s
 
-			Destroy(gameObject);
-		}
-		else 
-		{
-			if( GetComponent<PhotonView>().isMine ) 
-			{
-				if( gameObject.tag == "Player" ) 
-				{		// This is my actual PLAYER object, then initiate the respawn process
-					NetworkManager nm = GameObject.FindObjectOfType<NetworkManager>();
+						Destroy (gameObject);
+				} else {
+						if (GetComponent<PhotonView> ().isMine) {
+								if (gameObject.tag == "Player") {		// This is my actual PLAYER object, then initiate the respawn process
+										NetworkManager nm = GameObject.FindObjectOfType<NetworkManager> ();
 					
-					nm.standbyCamera.SetActive(true);
-					nm.respawnTimer = 0.5f;
-					nm.playerName = myName;
-				}
-				//Wait for 1s
-				PhotonNetwork.Destroy(gameObject);
+										nm.standbyCamera.SetActive (true);
+										nm.respawnTimer = 0.5f;
+										nm.playerName = myName;
+								}
+								//Wait for 1s
+								PhotonNetwork.Destroy (gameObject);
 				
-			}
+						}
+				}
 		}
-	}
-	
-	/*void OnGUI() {
-		if( GetComponent<PhotonView>().isMine && gameObject.tag == "Player" ) {
-			if( GUI.Button(new Rect (Screen.width-100, 0, 100, 40), "Suicide!") ) {
-				Die ();
-			}
-		}
-	}*/
-
 }

@@ -35,10 +35,6 @@ public class healthBarUpdate : MonoBehaviour {
 			Debug.Log ("Current Health: " + healthBarSlider.value);
 		}
 		healthBarSlider.value = (float) (health.currentHitPoints / 100);
-
-		//check if game is over i.e., health is greater than 0
-		//		if(!isGameOver)
-		//			transform.Translate(Input.GetAxis("Horizontal")*Time.deltaTime*10f, 0, 0); //get input
 	}
 	
 	//Check if player enters/stays on the fire
@@ -50,9 +46,7 @@ public class healthBarUpdate : MonoBehaviour {
 			if (this.healthBarSlider.value > 0 && other.rigidbody.velocity.magnitude >= pushThreshold && !InCharacterCollider)
 			{
 				Debug.Log ("You got slammed by " + other.gameObject.name + " moving at " + Vector3.Magnitude (other.rigidbody.velocity));
-				//healthBarSlider.value -= Vector3.Magnitude (other.rigidbody.velocity) / 10; 
 				basicAniController.inPain = true;
-				//pHealth = (int) Mathf.Round(healthBarSlider.value * 100.0f);
 				GetComponentInParent<PhotonView>().RPC ("TakeDamage", PhotonTargets.All, (int) Mathf.Round(Vector3.Magnitude (other.rigidbody.velocity) * 10f)); 
 			}
 		} 
@@ -61,8 +55,7 @@ public class healthBarUpdate : MonoBehaviour {
 			Debug.Log ("You got hit by " + other.gameObject.name + " moving at " + Vector3.Magnitude (other.rigidbody.velocity));
 			healthBarSlider.value -= Vector3.Magnitude (other.rigidbody.velocity) / 100;
 			basicAniController.inPain = true;
-			//pHealth = (int) Mathf.Round(healthBarSlider.value * 100.0f);
-			GetComponentInParent<PhotonView>().RPC ("TakeDamage", PhotonTargets.All, (int) Mathf.Round(Vector3.Magnitude (other.rigidbody.velocity) * 5f));
+			GetComponentInParent<PhotonView>().RPC ("TakeDamage", PhotonTargets.All, (int) Mathf.Round(Vector3.Magnitude (other.rigidbody.velocity)));
 		}
 		if (healthBarSlider.value < 0.01) 
 		{

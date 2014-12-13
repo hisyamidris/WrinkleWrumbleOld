@@ -3,9 +3,6 @@ using System.Collections;
 
 public class NetworkCharacter : Photon.MonoBehaviour {
 
-//	Vector3 realPosition = Vector3.zero;
-//	Quaternion realRotation = Quaternion.identity;
-
 	Vector3 realPosition2 = Vector3.zero;
 	Vector3 rigidbodyVel = Vector3.zero;
 	Vector3 rigidbodyAngVel = Vector3.zero;
@@ -28,8 +25,6 @@ public class NetworkCharacter : Photon.MonoBehaviour {
 			// Do nothing -- the character motor/input/etc... is moving us
 		}
 		else {
-//			transform.position = Vector3.Lerp(transform.position, realPosition, 0.1f);
-//			transform.rotation = Quaternion.Lerp(transform.rotation, realRotation, 0.1f);
 
 			rigidbody.position = Vector3.Lerp(rigidbody.position, realPosition2, 0.1f);
 			rigidbody.velocity = Vector3.Lerp(rigidbody.velocity, rigidbodyVel, 0.1f);
@@ -43,8 +38,6 @@ public class NetworkCharacter : Photon.MonoBehaviour {
 		if(stream.isWriting) {
 			// This is OUR player. We need to send our actual position to the network.
 
-//			stream.SendNext(transform.position);
-//			stream.SendNext(transform.rotation);
 			stream.SendNext(anim.GetFloat("Speed"));
 			stream.SendNext(anim.GetFloat("Rotation"));
 			stream.SendNext(anim.GetBool("Ground"));
@@ -63,8 +56,6 @@ public class NetworkCharacter : Photon.MonoBehaviour {
 			// This is someone else's player. We need to receive their position (as of a few
 			// millisecond ago, and update our version of that player.
 
-//			realPosition = (Vector3)stream.ReceiveNext();
-//			realRotation = (Quaternion)stream.ReceiveNext();
 			anim.SetFloat("Speed", (float)stream.ReceiveNext());
 			anim.SetFloat("Rotation", (float)stream.ReceiveNext());
 			anim.SetBool("Ground", (bool)stream.ReceiveNext());
@@ -81,8 +72,6 @@ public class NetworkCharacter : Photon.MonoBehaviour {
 			rigidbodyAngVel = (Vector3)stream.ReceiveNext();
 			
 			if(gotFirstUpdate == false) {
-				//				transform.position = realPosition;
-				//				transform.rotation = realRotation;
 
 				rigidbody.position = realPosition2;
 				rigidbody.rotation = realRotation2;

@@ -174,12 +174,10 @@ public class BasicAniController : Photon.MonoBehaviour {
 			isThrowing = true;
 			hasCube = false;
 			animation_vals.SetBool ("Throw", isThrowing);
-			//Instantiate(ThrowableCube, ThrowPosition.position, ThrowPosition.rotation);
 			objectName = objectName.Replace("(Clone)", "");
 			GameObject newObject = PhotonNetwork.Instantiate(objectName, ThrowPosition.position, ThrowPosition.rotation, 0) as GameObject;
 			newObject.transform.localScale = new Vector3(1f, 1f, 1f);
 			newObject.rigidbody.AddRelativeForce (new Vector3(0.0f,0.3f,1.0f) * ThrowForce);
-			//audio.PlayOneShot (ThrowingSFX);
 			GetComponent<PhotonView>().RPC("playSound", PhotonTargets.All, 1);
 		}
 
@@ -206,7 +204,6 @@ public class BasicAniController : Photon.MonoBehaviour {
 
 		// DEBUG: death logic
 		if(
-			//Input.GetKeyDown (KeyCode.O) || 
 		   (health.currentHitPoints < 1)
 		   )
 		{
@@ -247,7 +244,6 @@ public class BasicAniController : Photon.MonoBehaviour {
 			OnHitByObject();
 
 		if (inPain) {
-			//audio.PlayOneShot(PainSFX[Random.Range(0, PainSFX.Length)]);
 			if(isGenderMale)
 				GetComponent<PhotonView>().RPC("playSound", PhotonTargets.All, Random.Range(8, 10));
 			else GetComponent<PhotonView>().RPC("playSound", PhotonTargets.All, Random.Range (4, 6));
@@ -282,100 +278,39 @@ public class BasicAniController : Photon.MonoBehaviour {
 				GetComponent<PhotonView>().RPC("playSoundFootsteps", PhotonTargets.All, false);
 		}
 		else
-			//audio.Pause ();
 			GetComponent<PhotonView>().RPC("playSoundFootsteps", PhotonTargets.All, false);
 	}
 
-	//
-	//	Trigger detection with pickupable objects
-	//
 	void OnTriggerEnter(Collider theTrigger)
 	{
+
 		if(theTrigger.gameObject.tag == "Throwable" && 
 		   theTrigger.rigidbody.velocity.magnitude < 1.0f && 
 		   !(hasCube) &&
 		   Input.GetKey(KeyCode.J)
-		   //&& Input.GetKey(KeyCode.J)
-		   //&& theTrigger.GetComponent<PhotonView>().instantiationId != 0
 		   )
 		{
 			hasCube = true;
-			//gameObject.transform.FindChild ("Particle System").gameObject.SetActive (true);
-			//Debug.Log (theTrigger.GetComponent<MeshRenderer>().name);
-			//CubeRender = theTrigger.GetComponent<MeshRenderer> ();
-			//CubeFilter = theTrigger.GetComponent<MeshFilter> ();
-			//Debug.Log("subId: " + theTrigger.GetComponent<PhotonView>().subId);
-			//objectViewID = theTrigger.GetComponent<PhotonView>().subId;
-			//Debug.Log(theTrigger.gameObject.name);
 			objectName = theTrigger.gameObject.name;
-			//collider.isTrigger = true;
-			//theTrigger.renderer.enabled = false;
-			//theTrigger.collider.enabled = false;
-
-//					if(theTrigger.GetComponent<PhotonView>().instantiationId == 0)
-			//Destroy (theTrigger.gameObject);
-//			if (PhotonNetwork.isMasterClient)
-//			PhotonNetwork.Destroy (theTrigger.gameObject);
-//
-//			Destroy (theTrigger.gameObject);
-
 			theTrigger.GetComponent<PhotonView>().RPC("killObject", PhotonTargets.All);
 			GetComponent<PhotonView>().RPC("playSound", PhotonTargets.All, 0);
 		}
 	}
 
 	void OnTriggerStay(Collider other) {
-		if (other.gameObject == null)
-						HealthBarUpdate.InCharacterCollider = false;
-		else HealthBarUpdate.InCharacterCollider = true;
+		if (other.gameObject.tag == "Pushable")
+						HealthBarUpdate.InCharacterCollider = true;
+		else HealthBarUpdate.InCharacterCollider = false;
 		}
 
-	void CheckHealth(){
-		if(HealthBarUpdate.pHealth < 25) procParticles.lowHealth = true;
-		else procParticles.lowHealth = false;
-
-//		if (HealthBarUpdate.pHealth < 1)
-//						Die ();
+	void OnTriggerExit(Collider other) {
+		if (other.gameObject.tag == "Pushable")
+			HealthBarUpdate.InCharacterCollider = true;
+		else HealthBarUpdate.InCharacterCollider = false;
 	}
-
-//	void Die() {
-//		if( GetComponent<PhotonView>().instantiationId==0 ) {
-//			Destroy(gameObject);
-//		}
-//		else {
-//			if( GetComponent<PhotonView>().isMine ) {
-//				if( gameObject.tag == "Player" ) {		// This is my actual PLAYER object, then initiate the respawn process
-//					NetworkManager nm = GameObject.FindObjectOfType<NetworkManager>();
-//					
-//					nm.standbyCamera.SetActive(true);
-//					nm.respawnTimer = 3f;
-//				}
-//				else if( gameObject.tag == "Bot" ) {
-//					Debug.LogError("WARNING: No bot respawn code exists!");
-//				}
-//				
-//				PhotonNetwork.Destroy(gameObject);
-//			}
-//		}
-//	}
-//
-//	public float hitPoints = 100f;
-//	float currentHitPoints;
-//
-//	[RPC]
-//	public void TakeDamage(int amt) {
-//		HealthBarUpdate.pHealth -= amt;
-//		
-//		if(HealthBarUpdate.pHealth <= 0) {
-//			Die();
-//		}
-//	}
-//	[RPC]
-//	public void killObject(Collider theTrigger){
-//		if(theTrigger.GetComponent<PhotonView>().instantiationId == 0)
-//			Destroy (theTrigger.gameObject);
-//		else if (PhotonNetwork.isMasterClient)
-//			PhotonNetwork.Destroy (theTrigger.gameObject);
-//
-//	}
+	
+	void CheckHealth(){
+		if(health.currentHitPoints < 25) procParticles.lowHealth = true;
+		else procParticles.lowHealth = false;
+	}
 }

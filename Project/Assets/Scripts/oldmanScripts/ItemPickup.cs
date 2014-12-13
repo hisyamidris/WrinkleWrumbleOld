@@ -39,7 +39,6 @@ public class ItemPickup : MonoBehaviour {
 		{
 			Debug.Log("Picked up an item");
 			audio.PlayOneShot (PickSFX);
-			//CubeRender.enabled = true;
 			myTrigger = true;
 		}
 	}
